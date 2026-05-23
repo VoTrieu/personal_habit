@@ -8,6 +8,7 @@ import 'widgets/add_habit_dialog.dart';
 import 'widgets/habit_summary.dart';
 import 'widgets/habit_tile.dart';
 import 'widgets/today_header.dart';
+import 'widgets/week_strip.dart';
 
 class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key});
@@ -80,6 +81,7 @@ class _TodayScreenState extends State<TodayScreen> {
           icon: habitIcon ?? Icons.star,
           streak: 0,
           isCompletedToday: false,
+          color: const Color(0xFF00897B),
         ),
       ];
     });
@@ -180,6 +182,8 @@ class _TodayScreenState extends State<TodayScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           const TodayHeader(),
+          const SizedBox(height: 20),
+          const WeekStrip(),
           const SizedBox(height: 24),
           HabitSummary(
             bestStreak: bestStreak,

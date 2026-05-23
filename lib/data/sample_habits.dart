@@ -9,6 +9,7 @@ const sampleHabits = [
     icon: Icons.menu_book,
     streak: 3,
     isCompletedToday: false,
+    color: Color(0xFF00897B),
   ),
   Habit(
     id: 'water',
@@ -16,6 +17,7 @@ const sampleHabits = [
     icon: Icons.water_drop,
     streak: 5,
     isCompletedToday: true,
+    color: Color(0xFFFF5A4E),
   ),
   Habit(
     id: 'walk',
@@ -23,5 +25,6 @@ const sampleHabits = [
     icon: Icons.directions_walk,
     streak: 2,
     isCompletedToday: false,
+    color: Color(0xFFFFB020),
   ),
 ];

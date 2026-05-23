@@ -6,6 +6,7 @@ class Habit {
   final IconData icon;
   final bool isCompletedToday;
   final int streak;
+  final Color color;
 
   const Habit({
     required this.id,
@@ -13,6 +14,7 @@ class Habit {
     required this.icon,
     required this.isCompletedToday,
     required this.streak,
+    required this.color,
   });
 
   Habit copyWith({
@@ -21,6 +23,7 @@ class Habit {
     IconData? icon,
     bool? isCompletedToday,
     int? streak,
+    Color? color,
   }) {
     return Habit(
       id: id ?? this.id,
@@ -28,6 +31,7 @@ class Habit {
       icon: icon ?? this.icon,
       isCompletedToday: isCompletedToday ?? this.isCompletedToday,
       streak: streak ?? this.streak,
+      color: color ?? this.color,
     );
   }
 }

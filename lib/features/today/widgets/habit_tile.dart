@@ -17,27 +17,55 @@ class HabitTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(habit.icon),
-      title: Text(habit.name),
-      subtitle: Text('Streak: ${habit.streak}'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(
-              habit.isCompletedToday ? Icons.check_circle : Icons.circle_outlined,
-              color: habit.isCompletedToday ? Colors.green : Colors.grey,
-            ),
-            onPressed: onToggle,
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete, color: Colors.red),
-            onPressed: onDelete,
-          ) 
-        ],
-      ),
+    return InkWell(
       onTap: onOpen,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: habit.color,
+              foregroundColor: Colors.white,
+              child: Icon(habit.icon),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    habit.name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${habit.streak} day streak',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.black54),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              onPressed: onToggle,
+              icon: Icon(
+                habit.isCompletedToday
+                    ? Icons.check_circle
+                    : Icons.circle_outlined,
+                size: 36,
+                color: habit.isCompletedToday ? habit.color : Colors.black26,
+              ),
+            ),
+            IconButton(
+              onPressed: onDelete,
+              icon: const Icon(Icons.delete_outline),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
