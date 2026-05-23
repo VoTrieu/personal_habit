@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/habit.dart';
+import 'habit_detail_result.dart';
 
 class HabitDetailScreen extends StatelessWidget {
   const HabitDetailScreen({super.key,
@@ -36,16 +37,28 @@ class HabitDetailScreen extends StatelessWidget {
             Text(
               habit.isCompletedToday ? 'Completed today' : 'Not completed today',
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             FilledButton.icon(
-              onPressed: () => Navigator.pop(context, habit.id),
+              onPressed: () => Navigator.pop(context, HabitDetailResult(
+                habitId: habit.id,
+                action: HabitDetailAction.toggleCompletion,
+              )),
               icon: Icon(
                 habit.isCompletedToday ? Icons.check_circle : Icons.check_circle_outline,
               ),
               label: Text(
                 habit.isCompletedToday ? 'Mark as Incomplete' : 'Mark as Completed',
               ),
-            )
+            ),
+            const SizedBox(height: 12),
+             OutlinedButton.icon(
+              onPressed: () => Navigator.pop(context, HabitDetailResult(
+                habitId: habit.id,
+                action: HabitDetailAction.edit,
+              )),
+              icon: const Icon(Icons.edit),
+              label: const Text('Edit Habit'),
+            ),
           ],
         ),
       ),

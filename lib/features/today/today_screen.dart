@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/habit.dart';
+import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
 import 'widgets/add_habit_dialog.dart';
 import 'widgets/habit_tile.dart';
@@ -43,6 +44,14 @@ class _TodayScreenState extends State<TodayScreen> {
   double get completionProgress {
     if (habits.isEmpty) return 0;
     return completedCount / habits.length;
+  }
+
+  Habit? findHabitById(String id) {
+    try {
+      return habits.firstWhere((h) => h.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
   void toggleHabitCompletion(String habitId) {
@@ -116,15 +125,62 @@ class _TodayScreenState extends State<TodayScreen> {
   }
   
   Future<void> openHabitDetail(Habit habit) async {
-    final habitId = await Navigator.of(context).push<String>(
+    final result = await Navigator.of(context).push<HabitDetailResult>(
       MaterialPageRoute(
         builder: (context) => HabitDetailScreen(habit: habit),
       ),
     );
 
-    if(!mounted || habitId == null) return;
+    if(!mounted || result == null) return;
 
-    toggleHabitCompletion(habitId);
+    
+    switch(result.action) {
+      case HabitDetailAction.toggleCompletion:
+        toggleHabitCompletion(result.habitId);
+        break;
+      case HabitDetailAction.edit:
+        await editHabit(result.habitId);
+        final updatedHabit = findHabitById(result.habitId);
+        if (updatedHabit != null) {
+          await openHabitDetail(updatedHabit);
+        }
+        break;
+    }
+  }
+
+  Future<void> editHabit(String habitId) async {
+    final habit = findHabitById(habitId);
+
+    if (habit == null) return;
+
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => AddHabitDialog(
+        initialName: habit.name,
+        initialIcon: habit.icon,
+      ),
+    );
+
+    if (!mounted) return;
+
+    final updatedName = result?['name'] as String?;
+    final updatedIcon = result?['icon'] as IconData?;
+
+    if (updatedName == null || updatedName.trim().isEmpty) {
+      return;
+    }
+
+    setState(() {
+      habits = habits.map((habit) {
+        if (habit.id == habitId) {
+          return habit.copyWith(
+            name: updatedName.trim(),
+            icon: updatedIcon ?? habit.icon,
+          );
+        }
+        return habit;
+      }).toList();
+    });
   }
 
   @override

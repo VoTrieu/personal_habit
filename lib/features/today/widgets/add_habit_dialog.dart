@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AddHabitDialog extends StatefulWidget {
-  const AddHabitDialog({super.key});
+  const AddHabitDialog({
+    super.key,
+    this.initialName,
+    this.initialIcon,
+  });
+
+  final String? initialName;
+  final IconData? initialIcon;
 
   @override
   State<AddHabitDialog> createState() => _AddHabitDialogState();
@@ -14,14 +21,24 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
   bool get canSubmit => _controller.text.trim().isNotEmpty && _selectedIcon != null;
 
   @override
+  void initState() {
+    super.initState();
+    _controller.text = widget.initialName ?? '';
+    _selectedIcon = widget.initialIcon;
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.initialName != null;
+
     return AlertDialog(
-      title: const Text('Add New Habit'),
+      title: Text(isEditing ? 'Edit Habit' : 'Add New Habit'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -55,7 +72,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
                 'icon': _selectedIcon,
               });
             } : null,
-          child: const Text('Add'),
+          child: Text(isEditing ? 'Save' : 'Add'),
         )
       ],
     );
