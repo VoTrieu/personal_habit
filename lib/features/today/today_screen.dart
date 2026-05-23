@@ -7,6 +7,7 @@ import '../habit_detail/habit_detail_screen.dart';
 import 'widgets/add_habit_dialog.dart';
 import 'widgets/habit_summary.dart';
 import 'widgets/habit_tile.dart';
+import 'widgets/today_header.dart';
 
 class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key});
@@ -174,11 +175,12 @@ class _TodayScreenState extends State<TodayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Today')),
       body: hasHabits
       ? ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          const TodayHeader(),
+          const SizedBox(height: 24),
           HabitSummary(
             bestStreak: bestStreak,
             completedCount: completedCount,
