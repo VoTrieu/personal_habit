@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/habit.dart';
+import '../habit_detail/habit_detail_screen.dart';
 import 'widgets/add_habit_dialog.dart';
 import 'widgets/habit_tile.dart';
 
@@ -114,6 +115,14 @@ class _TodayScreenState extends State<TodayScreen> {
     });
   }
   
+  void openHabitDetail(Habit habit) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => HabitDetailScreen(habit: habit),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,8 +141,9 @@ class _TodayScreenState extends State<TodayScreen> {
           ...habits.map((habit) {
             return HabitTile(
               habit: habit,
-              onTap: () => toggleHabitCompletion(habit.id),
+              onToggle: () => toggleHabitCompletion(habit.id),
               onDelete: () => deleteHabit(habit.id),
+              onOpen: () => openHabitDetail(habit),
             );
           })
         ]

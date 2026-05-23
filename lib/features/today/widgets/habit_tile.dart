@@ -6,12 +6,14 @@ class HabitTile extends StatelessWidget {
   const HabitTile({
     super.key,
     required this.habit,
-    required this.onTap,
+    required this.onToggle,
     required this.onDelete,
+    required this.onOpen,
   });
   final Habit habit;
-  final VoidCallback onTap;
+  final VoidCallback onToggle;
   final VoidCallback onDelete;
+  final VoidCallback onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class HabitTile extends StatelessWidget {
               habit.isCompletedToday ? Icons.check_circle : Icons.circle_outlined,
               color: habit.isCompletedToday ? Colors.green : Colors.grey,
             ),
-            onPressed: onTap,
+            onPressed: onToggle,
           ),
           IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
@@ -35,7 +37,7 @@ class HabitTile extends StatelessWidget {
           ) 
         ],
       ),
-      onTap: onTap,
+      onTap: onOpen,
     );
   }
 }
