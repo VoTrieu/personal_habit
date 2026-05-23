@@ -37,6 +37,8 @@ class _TodayScreenState extends State<TodayScreen> {
 
   int get completedCount => habits.where((h) => h.isCompletedToday).length;
 
+  bool get hasHabits => habits.isNotEmpty;
+
   double get completionProgress {
     if (habits.isEmpty) return 0;
     return completedCount / habits.length;
@@ -116,7 +118,8 @@ class _TodayScreenState extends State<TodayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Today')),
-      body: ListView(
+      body: hasHabits
+      ? ListView(
         padding: const EdgeInsets.all(16),
         children: [
           Text(
@@ -134,6 +137,9 @@ class _TodayScreenState extends State<TodayScreen> {
             );
           })
         ]
+      )
+      : const Center(
+        child: Text('No habits added yet. Tap the + button to add your first habit!'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: addHabit,
