@@ -84,7 +84,29 @@ class _TodayScreenState extends State<TodayScreen> {
     });
   }
 
-  void deleteHabit(String habitId) {
+  Future<void> deleteHabit(String habitId) async {
+     final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Habit'),
+        content: const Text('Are you sure you want to delete this habit?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete'),
+          )
+        ],
+      ),
+    );
+
+    if (!mounted || shouldDelete != true) {
+      return;
+    }
+
     setState(() {
       habits = habits.where((h) => h.id != habitId).toList();
     });
