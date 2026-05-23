@@ -1,35 +1,98 @@
 import 'package:flutter/material.dart';
 
-class TodayScreen extends StatelessWidget {
+import '../../models/habit.dart';
+import 'widgets/habit_tile.dart';
+
+class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key});
+  @override
+  State<TodayScreen> createState() => _TodayScreenState();
+}
+
+class _TodayScreenState extends State<TodayScreen> {
+  List<Habit> habits = [
+    Habit(
+      id: 'read',
+      name: 'Read 20 pages',
+      icon: Icons.menu_book,
+      streak: 3,
+      isCompletedToday: false,
+    ),
+    Habit(
+      id: 'water',
+      name: 'Drink water',
+      icon: Icons.water_drop,
+      streak: 5,
+      isCompletedToday: true,
+    ),
+    Habit(
+      id: 'walk',
+      name: 'Morning walk',
+      icon: Icons.directions_walk,
+      streak: 2,
+      isCompletedToday: false,
+    ),
+  ];
+
+  int get completedCount => habits.where((h) => h.isCompletedToday).length;
+
+  double get completionProgress {
+    if (habits.isEmpty) return 0;
+    return completedCount / habits.length;
+  }
+  void toggleHabitCompletion(String habitId) {
+    setState(() {
+      habits = habits.map((habit) {
+        if (habit.id == habitId) {
+          return habit.copyWith(
+            isCompletedToday: !habit.isCompletedToday,
+          );
+        }
+        return habit;
+      }).toList();
+    });
+  }
+
+  void addHabit() {
+    setState(() {
+      habits = [
+        ...habits,
+        Habit(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          name: 'New Habit',
+          icon: Icons.star,
+          streak: 0,
+          isCompletedToday: false,
+        )
+      ];
+    }); // This will be implemented in the future to add new habits
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Today'),
-      ),
+      appBar: AppBar(title: const Text('Today')),
       body: ListView(
-        children:  const [
-          ListTile(
-            leading: Icon(Icons.menu_book, color: Colors.green),
-            title: Text('Read 20 pages of a book'),
-            subtitle: Text('3 day streak'),
-            trailing: Icon(Icons.check_circle_outline, color: Colors.green)
+        padding: const EdgeInsets.all(16),
+        children: [
+          Text(
+            '$completedCount of ${habits.length} habits completed',
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-          ListTile(
-            leading: Icon(Icons.water_drop, color: Colors.green),
-            title: Text('Drink 8 glasses of water'),
-            subtitle: Text('5 day streak'),
-            trailing: Icon(Icons.check_circle_outline, color: Colors.green)
-          ),
-          ListTile(
-            leading: Icon(Icons.directions_walk, color: Colors.green),
-            title: Text('Go for a walk'),
-            subtitle: Text('2 day streak'),
-            trailing: Icon(Icons.check_circle_outline, color: Colors.green) 
-          ),
-        ],
+          const SizedBox(height: 8),
+          LinearProgressIndicator(value: completionProgress),
+          const SizedBox(height: 16),
+          ...habits.map((habit) {
+            return HabitTile(
+              habit: habit,
+              onTap: () => toggleHabitCompletion(habit.id),
+            );
+          })
+        ]
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: addHabit,
+        child: const Icon(Icons.add),
       ),
     );
   }
