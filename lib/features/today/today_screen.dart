@@ -115,12 +115,16 @@ class _TodayScreenState extends State<TodayScreen> {
     });
   }
   
-  void openHabitDetail(Habit habit) {
-    Navigator.of(context).push(
+  Future<void> openHabitDetail(Habit habit) async {
+    final habitId = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         builder: (context) => HabitDetailScreen(habit: habit),
       ),
     );
+
+    if(!mounted || habitId == null) return;
+
+    toggleHabitCompletion(habitId);
   }
 
   @override

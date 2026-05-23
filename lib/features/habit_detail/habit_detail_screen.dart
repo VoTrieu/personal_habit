@@ -36,6 +36,16 @@ class HabitDetailScreen extends StatelessWidget {
             Text(
               habit.isCompletedToday ? 'Completed today' : 'Not completed today',
             ),
+            SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: () => Navigator.pop(context, habit.id),
+              icon: Icon(
+                habit.isCompletedToday ? Icons.check_circle : Icons.check_circle_outline,
+              ),
+              label: Text(
+                habit.isCompletedToday ? 'Mark as Incomplete' : 'Mark as Completed',
+              ),
+            )
           ],
         ),
       ),
