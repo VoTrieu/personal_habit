@@ -7,9 +7,11 @@ class HabitTile extends StatelessWidget {
     super.key,
     required this.habit,
     required this.onTap,
+    required this.onDelete,
   });
   final Habit habit;
   final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class HabitTile extends StatelessWidget {
         color: habit.isCompletedToday ? Colors.green : Colors.grey,
       ),
       onTap: onTap,
+      onLongPress: onDelete,
     );
   }
 }

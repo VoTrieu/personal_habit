@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/habit.dart';
+import 'widgets/add_habit_dialog.dart';
 import 'widgets/habit_tile.dart';
 
 class TodayScreen extends StatefulWidget {
@@ -40,6 +41,7 @@ class _TodayScreenState extends State<TodayScreen> {
     if (habits.isEmpty) return 0;
     return completedCount / habits.length;
   }
+
   void toggleHabitCompletion(String habitId) {
     setState(() {
       habits = habits.map((habit) {
@@ -53,21 +55,41 @@ class _TodayScreenState extends State<TodayScreen> {
     });
   }
 
-  void addHabit() {
+  Future<void> addHabit() async {
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => const AddHabitDialog(),
+    );
+
+    if (!mounted) return;
+
+    final habitName = result?['name'] as String?;
+    final habitIcon = result?['icon'] as IconData?;
+
+    if (habitName == null || habitName.trim().isEmpty) {
+      return;
+    }
+
     setState(() {
       habits = [
         ...habits,
         Habit(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
-          name: 'New Habit',
-          icon: Icons.star,
+          name: habitName.trim(),
+          icon: habitIcon ?? Icons.star,
           streak: 0,
           isCompletedToday: false,
-        )
+        ),
       ];
-    }); // This will be implemented in the future to add new habits
+    });
   }
 
+  void deleteHabit(String habitId) {
+    setState(() {
+      habits = habits.where((h) => h.id != habitId).toList();
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,6 +108,7 @@ class _TodayScreenState extends State<TodayScreen> {
             return HabitTile(
               habit: habit,
               onTap: () => toggleHabitCompletion(habit.id),
+              onDelete: () => deleteHabit(habit.id),
             );
           })
         ]
