@@ -19,12 +19,23 @@ class HabitTile extends StatelessWidget {
       leading: Icon(habit.icon),
       title: Text(habit.name),
       subtitle: Text('Streak: ${habit.streak}'),
-      trailing: Icon(
-        habit.isCompletedToday ? Icons.check_circle : Icons.circle_outlined,
-        color: habit.isCompletedToday ? Colors.green : Colors.grey,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(
+              habit.isCompletedToday ? Icons.check_circle : Icons.circle_outlined,
+              color: habit.isCompletedToday ? Colors.green : Colors.grey,
+            ),
+            onPressed: onTap,
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: onDelete,
+          ) 
+        ],
       ),
       onTap: onTap,
-      onLongPress: onDelete,
     );
   }
 }
