@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../data/sample_habits.dart';
 import '../../models/habit.dart';
 import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
 import 'widgets/add_habit_dialog.dart';
+import 'widgets/habit_summary.dart';
 import 'widgets/habit_tile.dart';
 
 class TodayScreen extends StatefulWidget {
@@ -13,29 +15,7 @@ class TodayScreen extends StatefulWidget {
 }
 
 class _TodayScreenState extends State<TodayScreen> {
-  List<Habit> habits = [
-    Habit(
-      id: 'read',
-      name: 'Read 20 pages',
-      icon: Icons.menu_book,
-      streak: 3,
-      isCompletedToday: false,
-    ),
-    Habit(
-      id: 'water',
-      name: 'Drink water',
-      icon: Icons.water_drop,
-      streak: 5,
-      isCompletedToday: true,
-    ),
-    Habit(
-      id: 'walk',
-      name: 'Morning walk',
-      icon: Icons.directions_walk,
-      streak: 2,
-      isCompletedToday: false,
-    ),
-  ];
+  List<Habit> habits = [...sampleHabits];
 
   int get completedCount => habits.where((h) => h.isCompletedToday).length;
 
@@ -47,12 +27,20 @@ class _TodayScreenState extends State<TodayScreen> {
   }
 
   Habit? findHabitById(String id) {
-    try {
-      return habits.firstWhere((h) => h.id == id);
-    } catch (e) {
-      return null;
-    }
+   for (final habit in habits) {
+     if (habit.id == id) {
+       return habit;
+     }
+   }
+   return null;
   }
+
+  int get bestStreak {
+    if (habits.isEmpty) return 0;
+    var highestStreak = habits.map((h) => h.streak).reduce((a, b) => a > b ? a : b);
+    return highestStreak;
+  }
+
 
   void toggleHabitCompletion(String habitId) {
     setState(() {
@@ -191,12 +179,12 @@ class _TodayScreenState extends State<TodayScreen> {
       ? ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(
-            '$completedCount of ${habits.length} habits completed',
-            style: Theme.of(context).textTheme.titleMedium,
+          HabitSummary(
+            bestStreak: bestStreak,
+            completedCount: completedCount,
+            totalCount: habits.length,
+            completionProgress: completionProgress,
           ),
-          const SizedBox(height: 8),
-          LinearProgressIndicator(value: completionProgress),
           const SizedBox(height: 16),
           ...habits.map((habit) {
             return HabitTile(
