@@ -11,6 +11,8 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
   final _controller = TextEditingController();
   IconData? _selectedIcon;
 
+  bool get canSubmit => _controller.text.trim().isNotEmpty && _selectedIcon != null;
+
   @override
   void dispose() {
     _controller.dispose();
@@ -26,6 +28,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
           TextField(
             controller: _controller,
             decoration: const InputDecoration(labelText: 'Habit Name'),
+            onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 16),
           Wrap(
@@ -46,14 +49,12 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: () {
-            if (_controller.text.isNotEmpty && _selectedIcon != null) {
+          onPressed: canSubmit ? () {
               Navigator.of(context).pop({
-                'name': _controller.text,
+                'name': _controller.text.trim(),
                 'icon': _selectedIcon,
               });
-            }
-          },
+            } : null,
           child: const Text('Add'),
         )
       ],
