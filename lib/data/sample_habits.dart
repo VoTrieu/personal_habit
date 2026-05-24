@@ -10,6 +10,9 @@ const sampleHabits = [
     streak: 3,
     isCompletedToday: false,
     color: Color(0xFF00897B),
+    frequency: 'Daily',
+    reminderEnabled: true,
+    reminderTime: TimeOfDay(hour: 10, minute: 30),
   ),
   Habit(
     id: 'water',
@@ -18,6 +21,9 @@ const sampleHabits = [
     streak: 5,
     isCompletedToday: true,
     color: Color(0xFFFF5A4E),
+    frequency: 'Daily',
+    reminderEnabled: true,
+    reminderTime: TimeOfDay(hour: 19, minute: 30),
   ),
   Habit(
     id: 'walk',
@@ -26,5 +32,8 @@ const sampleHabits = [
     streak: 2,
     isCompletedToday: false,
     color: Color(0xFFFFB020),
+    frequency: 'Weekday',
+    reminderEnabled: true,
+    reminderTime: TimeOfDay(hour: 8, minute: 30),
   ),
 ];

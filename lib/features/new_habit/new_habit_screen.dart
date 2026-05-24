@@ -43,9 +43,16 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
   void saveHabit() {
     if (!canSave) return;
     final name = controller.text.trim();
-    Navigator.of(
-      context,
-    ).pop(NewHabitResult(name: name, icon: selectedIcon, color: selectedColor));
+    Navigator.of(context).pop(
+      NewHabitResult(
+        name: name,
+        icon: selectedIcon,
+        color: selectedColor,
+        frequency: selectedFrequency,
+        reminderEnabled: reminderEnabled,
+        reminderTime: reminderTime,
+      ),
+    );
   }
 
   Future<void> pickReminderTime() async {
@@ -68,48 +75,79 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('New Habit')),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(16),
+        child: Column(
           children: [
-            Text("Habit Name", style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            TextField(
-              controller: controller,
-              decoration: const InputDecoration(
-                hintText: "e.g. Read 20 pages",
-                border: OutlineInputBorder(),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  Text(
+                    "Habit Name",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: controller,
+                    decoration: const InputDecoration(
+                      hintText: "e.g. Read 20 pages",
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: 24),
+                  HabitFrequencies(
+                    selectedFrequency: selectedFrequency,
+                    onSelected: (frequency) =>
+                        setState(() => selectedFrequency = frequency),
+                  ),
+                  const SizedBox(height: 24),
+                  HabitIcons(
+                    selectedIcon: selectedIcon,
+                    onSelected: (icon) => setState(() => selectedIcon = icon),
+                  ),
+                  const SizedBox(height: 24),
+                  HabitColors(
+                    selectedColor: selectedColor,
+                    onSelected: (color) =>
+                        setState(() => selectedColor = color),
+                  ),
+                  const SizedBox(height: 24),
+                  HabitReminder(
+                    isEnabled: reminderEnabled,
+                    onChanged: (value) =>
+                        setState(() => reminderEnabled = value),
+                  ),
+                  if (reminderEnabled) ...[
+                    const SizedBox(height: 16),
+                    HabitReminderTime(
+                      timeLabel: reminderTimeLabel,
+                      onTap: pickReminderTime,
+                    ),
+                  ],
+                ],
               ),
-              onChanged: (_) => setState(() {}),
             ),
-            const SizedBox(height: 24),
-            HabitFrequencies(
-              selectedFrequency: selectedFrequency,
-              onSelected: (frequency) =>
-                  setState(() => selectedFrequency = frequency),
-            ),
-            const SizedBox(height: 24),
-            HabitIcons(
-              selectedIcon: selectedIcon,
-              onSelected: (icon) => setState(() => selectedIcon = icon),
-            ),
-            const SizedBox(height: 24),
-            HabitColors(
-              selectedColor: selectedColor,
-              onSelected: (color) => setState(() => selectedColor = color),
-            ),
-            const SizedBox(height: 24),
-            HabitReminder(
-              isEnabled: reminderEnabled,
-              onChanged: (value) => setState(() => reminderEnabled = value),
-            ),
-            if (reminderEnabled) ...[
-              const SizedBox(height: 16),
-              HabitReminderTime(timeLabel: reminderTimeLabel, onTap: pickReminderTime),
-            ],
-            const SizedBox(height: 32),
-            FilledButton(
-              onPressed: canSave ? saveHabit : null,
-              child: const Text('Save Habit'),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              child: SizedBox(
+                width: double.infinity,
+                height: 54,
+                child: FilledButton(
+                  onPressed: canSave ? saveHabit : null,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF00897B),
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor: Colors.black12,
+                    disabledForegroundColor: Colors.black38,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    textStyle: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  child: const Text('Save Habit'),
+                ),
+              ),
             ),
           ],
         ),

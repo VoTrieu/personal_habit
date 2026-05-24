@@ -75,6 +75,9 @@ class _TodayScreenState extends State<TodayScreen> {
           streak: 0,
           isCompletedToday: false,
           color: result.color,
+          frequency: result.frequency,
+          reminderEnabled: result.reminderEnabled,
+          reminderTime: result.reminderTime,
         ),
       ];
     });

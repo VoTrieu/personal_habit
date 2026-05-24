@@ -7,6 +7,10 @@ class Habit {
   final bool isCompletedToday;
   final int streak;
   final Color color;
+  final String frequency;
+  final bool reminderEnabled;
+  final TimeOfDay reminderTime;
+
 
   const Habit({
     required this.id,
@@ -15,6 +19,9 @@ class Habit {
     required this.isCompletedToday,
     required this.streak,
     required this.color,
+    required this.frequency,
+    required this.reminderEnabled,
+    required this.reminderTime,
   });
 
   Habit copyWith({
@@ -24,6 +31,9 @@ class Habit {
     bool? isCompletedToday,
     int? streak,
     Color? color,
+    String? frequency,
+    bool? reminderEnabled,
+    TimeOfDay? reminderTime,
   }) {
     return Habit(
       id: id ?? this.id,
@@ -32,6 +42,9 @@ class Habit {
       isCompletedToday: isCompletedToday ?? this.isCompletedToday,
       streak: streak ?? this.streak,
       color: color ?? this.color,
+      frequency: frequency ?? this.frequency,
+      reminderEnabled: reminderEnabled ?? this.reminderEnabled,
+      reminderTime: reminderTime ?? this.reminderTime,
     );
   }
 }
