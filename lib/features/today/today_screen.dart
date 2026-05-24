@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:personal_habit/models/new_habit_result.dart';
 
 import '../../data/sample_habits.dart';
 import '../../models/habit.dart';
 import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
+import '../new_habit/new_habit_screen.dart';
 import 'widgets/add_habit_dialog.dart';
 import 'widgets/habit_summary.dart';
 import 'widgets/habit_tile.dart';
@@ -57,27 +59,19 @@ class _TodayScreenState extends State<TodayScreen> {
   }
 
   Future<void> addHabit() async {
-    final result = await showDialog<Map<String, dynamic>>(
-      context: context,
-      builder: (context) => const AddHabitDialog(),
+    final result = await Navigator.of(context).push<NewHabitResult>(
+      MaterialPageRoute(builder: (context) => const NewHabitScreen()),
     );
 
-    if (!mounted) return;
-
-    final habitName = result?['name'] as String?;
-    final habitIcon = result?['icon'] as IconData?;
-
-    if (habitName == null || habitName.trim().isEmpty) {
-      return;
-    }
+    if (!mounted || result == null) return;
 
     setState(() {
       habits = [
         ...habits,
         Habit(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
-          name: habitName.trim(),
-          icon: habitIcon ?? Icons.star,
+          name: result.name,
+          icon: result.icon,
           streak: 0,
           isCompletedToday: false,
           color: const Color(0xFF00897B),
