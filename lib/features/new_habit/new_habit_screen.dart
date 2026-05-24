@@ -10,7 +10,22 @@ import 'widgets/habit_reminder_time.dart';
 import 'widgets/habit_reminder.dart';
 
 class NewHabitScreen extends StatefulWidget {
-  const NewHabitScreen({super.key});
+  final String? initialName;
+  final IconData? initialIcon;
+  final Color? initialColor;
+  final String? initialFrequency;
+  final bool? initialReminderEnabled;
+  final TimeOfDay? initialReminderTime;
+
+  const NewHabitScreen({
+    super.key,
+    this.initialName,
+    this.initialIcon,
+    this.initialColor,
+    this.initialFrequency,
+    this.initialReminderEnabled,
+    this.initialReminderTime,
+  });
 
   @override
   State<NewHabitScreen> createState() => _NewHabitScreenState();
@@ -18,13 +33,27 @@ class NewHabitScreen extends StatefulWidget {
 
 class _NewHabitScreenState extends State<NewHabitScreen> {
   final controller = TextEditingController();
-  Color selectedColor = habitColors[0];
-  IconData selectedIcon = habitIcons[0];
-  String selectedFrequency = habitFrequencies[0];
-  bool reminderEnabled = false;
-  TimeOfDay reminderTime = const TimeOfDay(hour: 19, minute: 30);
+
+  late IconData selectedIcon;
+  late Color selectedColor;
+  late String selectedFrequency;
+  late bool reminderEnabled;
+  late TimeOfDay reminderTime;
 
   bool get canSave => controller.text.trim().isNotEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller.text = widget.initialName ?? '';
+    selectedColor = widget.initialColor ?? habitColors[0];
+    selectedIcon = widget.initialIcon ?? habitIcons[0];
+    selectedFrequency = widget.initialFrequency ?? habitFrequencies[0];
+    reminderEnabled = widget.initialReminderEnabled ?? false;
+    reminderTime =
+        widget.initialReminderTime ?? const TimeOfDay(hour: 19, minute: 30);
+  }
 
   @override
   void dispose() {
@@ -64,8 +93,9 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.initialName != null;
     return Scaffold(
-      appBar: AppBar(title: const Text('New Habit')),
+      appBar: AppBar(title: Text(isEditing ? 'Edit Habit' : 'New Habit')),
       body: SafeArea(
         child: Column(
           children: [

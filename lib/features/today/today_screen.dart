@@ -8,10 +8,10 @@ import '../../widgets/completion_week_strip.dart';
 import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
 import '../new_habit/new_habit_screen.dart';
-import 'widgets/add_habit_dialog.dart';
 import 'widgets/habit_summary.dart';
 import 'widgets/habit_tile.dart';
 import 'widgets/today_header.dart';
+
 class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key});
   @override
@@ -137,27 +137,31 @@ class _TodayScreenState extends State<TodayScreen> {
 
     if (habit == null) return;
 
-    final result = await showDialog<Map<String, dynamic>>(
-      context: context,
-      builder: (context) =>
-          AddHabitDialog(initialName: habit.name, initialIcon: habit.icon),
+    final result = await Navigator.of(context).push<NewHabitResult>(
+      MaterialPageRoute(
+        builder: (context) => NewHabitScreen(
+          initialName: habit.name,
+          initialIcon: habit.icon,
+          initialColor: habit.color,
+          initialFrequency: habit.frequency,
+          initialReminderEnabled: habit.reminderEnabled,
+          initialReminderTime: habit.reminderTime,
+        ),
+      ),
     );
 
-    if (!mounted) return;
-
-    final updatedName = result?['name'] as String?;
-    final updatedIcon = result?['icon'] as IconData?;
-
-    if (updatedName == null || updatedName.trim().isEmpty) {
-      return;
-    }
+    if (!mounted || result == null) return;
 
     setState(() {
       habits = habits.map((habit) {
         if (habit.id == habitId) {
           return habit.copyWith(
-            name: updatedName.trim(),
-            icon: updatedIcon ?? habit.icon,
+            name: result.name,
+            icon: result.icon,
+            color: result.color,
+            frequency: result.frequency,
+            reminderEnabled: result.reminderEnabled,
+            reminderTime: result.reminderTime,
           );
         }
         return habit;
@@ -175,17 +179,29 @@ class _TodayScreenState extends State<TodayScreen> {
                 children: [
                   const TodayHeader(),
                   const SizedBox(height: AppSpacing.headerToWeek),
-                  const CompletionWeekStrip (
+                  const CompletionWeekStrip(
                     showBorder: true,
                     days: [
-                      CompletionDay(label: 'Mon', date: '18', isCompleted: true),
-                      CompletionDay(label: 'Tue', date: '19', isCompleted: true),
-                      CompletionDay(label: 'Wed', date: '20', isCompleted: false),
+                      CompletionDay(
+                        label: 'Mon',
+                        date: '18',
+                        isCompleted: true,
+                      ),
+                      CompletionDay(
+                        label: 'Tue',
+                        date: '19',
+                        isCompleted: true,
+                      ),
+                      CompletionDay(
+                        label: 'Wed',
+                        date: '20',
+                        isCompleted: false,
+                      ),
                       CompletionDay(label: 'Thu', date: '21'),
                       CompletionDay(label: 'Fri', date: '22', isToday: true),
                       CompletionDay(label: 'Sat', date: '23'),
                       CompletionDay(label: 'Sun', date: '24'),
-                    ]
+                    ],
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   HabitSummary(
