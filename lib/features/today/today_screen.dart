@@ -29,28 +29,27 @@ class _TodayScreenState extends State<TodayScreen> {
   }
 
   Habit? findHabitById(String id) {
-   for (final habit in habits) {
-     if (habit.id == id) {
-       return habit;
-     }
-   }
-   return null;
+    for (final habit in habits) {
+      if (habit.id == id) {
+        return habit;
+      }
+    }
+    return null;
   }
 
   int get bestStreak {
     if (habits.isEmpty) return 0;
-    var highestStreak = habits.map((h) => h.streak).reduce((a, b) => a > b ? a : b);
+    var highestStreak = habits
+        .map((h) => h.streak)
+        .reduce((a, b) => a > b ? a : b);
     return highestStreak;
   }
-
 
   void toggleHabitCompletion(String habitId) {
     setState(() {
       habits = habits.map((habit) {
         if (habit.id == habitId) {
-          return habit.copyWith(
-            isCompletedToday: !habit.isCompletedToday,
-          );
+          return habit.copyWith(isCompletedToday: !habit.isCompletedToday);
         }
         return habit;
       }).toList();
@@ -88,7 +87,7 @@ class _TodayScreenState extends State<TodayScreen> {
   }
 
   Future<void> deleteHabit(String habitId) async {
-     final shouldDelete = await showDialog<bool>(
+    final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Habit'),
@@ -101,7 +100,7 @@ class _TodayScreenState extends State<TodayScreen> {
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
             child: const Text('Delete'),
-          )
+          ),
         ],
       ),
     );
@@ -114,18 +113,15 @@ class _TodayScreenState extends State<TodayScreen> {
       habits = habits.where((h) => h.id != habitId).toList();
     });
   }
-  
+
   Future<void> openHabitDetail(Habit habit) async {
     final result = await Navigator.of(context).push<HabitDetailResult>(
-      MaterialPageRoute(
-        builder: (context) => HabitDetailScreen(habit: habit),
-      ),
+      MaterialPageRoute(builder: (context) => HabitDetailScreen(habit: habit)),
     );
 
-    if(!mounted || result == null) return;
+    if (!mounted || result == null) return;
 
-    
-    switch(result.action) {
+    switch (result.action) {
       case HabitDetailAction.toggleCompletion:
         toggleHabitCompletion(result.habitId);
         break;
@@ -146,10 +142,8 @@ class _TodayScreenState extends State<TodayScreen> {
 
     final result = await showDialog<Map<String, dynamic>>(
       context: context,
-      builder: (context) => AddHabitDialog(
-        initialName: habit.name,
-        initialIcon: habit.icon,
-      ),
+      builder: (context) =>
+          AddHabitDialog(initialName: habit.name, initialIcon: habit.icon),
     );
 
     if (!mounted) return;
@@ -177,38 +171,46 @@ class _TodayScreenState extends State<TodayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: hasHabits
-      ? ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const TodayHeader(),
-          const SizedBox(height: 20),
-          const WeekStrip(),
-          const SizedBox(height: 24),
-          HabitSummary(
-            bestStreak: bestStreak,
-            completedCount: completedCount,
-            totalCount: habits.length,
-            completionProgress: completionProgress,
-          ),
-          const SizedBox(height: 16),
-          ...habits.map((habit) {
-            return HabitTile(
-              habit: habit,
-              onToggle: () => toggleHabitCompletion(habit.id),
-              onDelete: () => deleteHabit(habit.id),
-              onOpen: () => openHabitDetail(habit),
-            );
-          })
-        ]
-      )
-      : const Center(
-        child: Text('No habits added yet. Tap the + button to add your first habit!'),
+      body: SafeArea(
+        child: hasHabits
+            ? ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  const TodayHeader(),
+                  const SizedBox(height: 20),
+                  const WeekStrip(),
+                  const SizedBox(height: 24),
+                  HabitSummary(
+                    bestStreak: bestStreak,
+                    completedCount: completedCount,
+                    totalCount: habits.length,
+                    completionProgress: completionProgress,
+                  ),
+                  const SizedBox(height: 16),
+                  ...habits.map((habit) {
+                    return HabitTile(
+                      habit: habit,
+                      onToggle: () => toggleHabitCompletion(habit.id),
+                      onDelete: () => deleteHabit(habit.id),
+                      onOpen: () => openHabitDetail(habit),
+                    );
+                  }),
+                ],
+              )
+            : const Center(
+                child: Text(
+                  'No habits added yet. Tap the + button to add your first habit!',
+                ),
+              ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: addHabit,
-        child: const Icon(Icons.add),
+        backgroundColor: const Color(0xFF00897B),
+        foregroundColor: Colors.white,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, size: 32),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
