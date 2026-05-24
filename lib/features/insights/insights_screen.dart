@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:personal_habit/features/insights/widgets/insight_stat_cards.dart';
 
 import '../../theme/app_dimensions.dart';
+import 'widgets/active_habits.dart';
 import 'widgets/completion_rate.dart';
+import 'widgets/insight_stat_cards.dart';
 import 'widgets/weekly_completion_chart.dart';
 
 class InsightsScreen extends StatelessWidget {
@@ -21,7 +22,9 @@ class InsightsScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.xl),
             const WeeklyCompletionChart(),
             const SizedBox(height: AppSpacing.xl),
-            const InsightStatCards()
+            const InsightStatCards(),
+            const SizedBox(height: AppSpacing.xl),
+            const ActiveHabits(),
           ],
         ),
       ),

@@ -38,11 +38,11 @@ class CompletionRate extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: 72,
-            height: 72,
+            width: AppSizes.completionRateChartSize,
+            height: AppSizes.completionRateChartSize,
             child: CircularProgressIndicator(
               value: 0.72,
-              strokeWidth: 8,
+              strokeWidth: AppSizes.completionRateStrokeWidth,
               backgroundColor: AppColors.borderLight,
               color: AppColors.primary,
             ),

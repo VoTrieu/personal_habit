@@ -35,4 +35,10 @@ class AppSizes {
   static const weekDateFontSize = 11.0;
   static const floatingActionIconSize = 32.0;
   static const checkIconSize = 36.0;
+  static const profileAvatarRadius = 40.0;
+  static const profileAvatarIconSize = 40.0;
+  static const completionRateChartSize = 72.0;
+  static const completionRateStrokeWidth = 8.0;
+  static const weeklyChartHeight = 180.0;
+  static const weeklyChartBarWidth = 18.0;
 }

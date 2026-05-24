@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:personal_habit/theme/app_theme.dart';
 
 import 'features/app_shell/app_shell.dart';
+import 'theme/app_theme.dart';
 
 void main() {
   runApp(const MyApp());

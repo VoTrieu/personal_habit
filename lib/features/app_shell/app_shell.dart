@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../habits/habits_screen.dart';
 import '../insights/insights_screen.dart';
+import '../profile/profile_screen.dart';
 import '../today/today_screen.dart';
 
 class AppShell extends StatefulWidget {
@@ -15,9 +17,9 @@ class _AppShellState extends State<AppShell> {
 
   final pages = const [
     TodayScreen(),
-    _PlaceholderTab(title: 'Habits'),
+    HabitsScreen(),
     InsightsScreen(),
-    _PlaceholderTab(title: 'Profile'),
+    ProfileScreen(),
   ];
 
   @override
@@ -54,20 +56,6 @@ class _AppShellState extends State<AppShell> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _PlaceholderTab extends StatelessWidget {
-  const _PlaceholderTab({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(child: Text('$title coming soon')),
     );
   }
 }

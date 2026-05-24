@@ -20,7 +20,7 @@ class WeeklyCompletionChart extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         Container(
-          height: 180,
+          height: AppSizes.weeklyChartHeight,
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.borderLight),
@@ -39,7 +39,7 @@ class WeeklyCompletionChart extends StatelessWidget {
                         child: FractionallySizedBox(
                           heightFactor: values[index],
                           child: Container(
-                            width: 18,
+                            width: AppSizes.weeklyChartBarWidth,
                             decoration: BoxDecoration(
                               color: AppColors.primary,
                               borderRadius: BorderRadius.circular(AppRadius.sm),
