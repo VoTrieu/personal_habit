@@ -46,4 +46,36 @@ class Habit {
       reminderTime: reminderTime ?? this.reminderTime,
     );
   }
+
+  Map<String, Object?> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'iconCodePoint': icon.codePoint,
+      'isCompletedToday': isCompletedToday ? 1 : 0,
+      'streak': streak,
+      'colorValue': color.toARGB32(),
+      'frequency': frequency,
+      'reminderEnabled': reminderEnabled ? 1 : 0,
+      'reminderTimeMinutes': reminderTime.hour * 60 + reminderTime.minute,
+    };
+  }
+
+  factory Habit.fromMap(Map<String, Object?> map) {
+    final reminderTimeMinutes = map['reminderTimeMinutes'] as int;
+    return Habit(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      icon: IconData(map['iconCodePoint'] as int, fontFamily: 'MaterialIcons'),
+      isCompletedToday: (map['isCompletedToday'] as int) == 1,
+      streak: map['streak'] as int,
+      color: Color(map['colorValue'] as int),
+      frequency: map['frequency'] as String,
+      reminderEnabled: (map['reminderEnabled'] as int) == 1,
+      reminderTime: TimeOfDay(
+        hour: reminderTimeMinutes ~/ 60,
+        minute: reminderTimeMinutes % 60,
+      ),
+    );
+  }
 }

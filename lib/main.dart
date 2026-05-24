@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'controllers/habit_controller.dart';
 import 'features/app_shell/app_shell.dart';
 import 'theme/app_theme.dart';
 
@@ -16,7 +18,10 @@ class MyApp extends StatelessWidget {
       title: 'Personal Habit Tracker',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      home: const AppShell(),
+      home: ChangeNotifierProvider(
+        create: (_) => HabitController()..loadHabits(),
+        child: const AppShell(),
+      )
     );
   }
 }
