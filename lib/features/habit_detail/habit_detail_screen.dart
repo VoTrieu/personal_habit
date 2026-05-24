@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/habit.dart';
+import '../../utils/time_formatters.dart';
 import 'habit_detail_result.dart';
 
 class HabitDetailScreen extends StatelessWidget {
@@ -34,6 +35,16 @@ class HabitDetailScreen extends StatelessWidget {
               'Current streak: ${habit.streak} days',
             ),
             const SizedBox(height: 8),
+            Text(
+              'Frequency: ${habit.frequency}',
+            ),
+            const SizedBox(height: 8),
+            Text(
+              habit.reminderEnabled
+              ? 'Reminder ${formatTimeOfDay(habit.reminderTime)}'
+              : 'Reminder Off'
+            ),
+            const SizedBox(height: 24),
             Text(
               habit.isCompletedToday ? 'Completed today' : 'Not completed today',
             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:personal_habit/features/new_habit/widgets/habit_reminder.dart';
 
 import '../../models/new_habit_result.dart';
+import '../../utils/time_formatters.dart';
 import 'widgets/habit_colors.dart';
 import 'widgets/habit_frequencies.dart';
 import 'widgets/habit_icons.dart';
@@ -23,16 +24,6 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
   TimeOfDay reminderTime = const TimeOfDay(hour: 19, minute: 30);
 
   bool get canSave => controller.text.trim().isNotEmpty;
-
-  String get reminderTimeLabel {
-    final hour = reminderTime.hourOfPeriod == 0
-        ? 12
-        : reminderTime.hourOfPeriod;
-    final minute = reminderTime.minute.toString().padLeft(2, '0');
-    final period = reminderTime.period == DayPeriod.am ? 'AM' : 'PM';
-
-    return '$hour:$minute $period';
-  }
 
   @override
   void dispose() {
@@ -120,7 +111,7 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
                   if (reminderEnabled) ...[
                     const SizedBox(height: 16),
                     HabitReminderTime(
-                      timeLabel: reminderTimeLabel,
+                      timeLabel: formatTimeOfDay(reminderTime),
                       onTap: pickReminderTime,
                     ),
                   ],
