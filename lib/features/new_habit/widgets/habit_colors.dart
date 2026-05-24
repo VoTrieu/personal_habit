@@ -24,7 +24,7 @@ class HabitColors extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Color', style: Theme.of(context).textTheme.titleSmall),
+        Text('Color', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
         Wrap(
           spacing: 12,

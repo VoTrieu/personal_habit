@@ -17,7 +17,7 @@ class HabitFrequencies extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Frequency', style: Theme.of(context).textTheme.titleSmall),
+        Text('Frequency', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
         SegmentedButton<String>(
           showSelectedIcon: false,

@@ -24,7 +24,7 @@ class HabitIcons extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Icon', style: Theme.of(context).textTheme.titleSmall),
+        Text('Icon', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
         Wrap(
           spacing: 12,

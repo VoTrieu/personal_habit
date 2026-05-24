@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:personal_habit/features/new_habit/widgets/habit_reminder.dart';
 
 import '../../models/new_habit_result.dart';
 import 'widgets/habit_colors.dart';
 import 'widgets/habit_frequencies.dart';
 import 'widgets/habit_icons.dart';
+import 'widgets/habit_reminder_time.dart';
 
 class NewHabitScreen extends StatefulWidget {
   const NewHabitScreen({super.key});
@@ -17,9 +19,20 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
   Color selectedColor = habitColors[0];
   IconData selectedIcon = habitIcons[0];
   String selectedFrequency = habitFrequencies[0];
-
+  bool reminderEnabled = false;
+  TimeOfDay reminderTime = const TimeOfDay(hour: 19, minute: 30);
 
   bool get canSave => controller.text.trim().isNotEmpty;
+
+  String get reminderTimeLabel {
+    final hour = reminderTime.hourOfPeriod == 0
+        ? 12
+        : reminderTime.hourOfPeriod;
+    final minute = reminderTime.minute.toString().padLeft(2, '0');
+    final period = reminderTime.period == DayPeriod.am ? 'AM' : 'PM';
+
+    return '$hour:$minute $period';
+  }
 
   @override
   void dispose() {
@@ -30,9 +43,24 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
   void saveHabit() {
     if (!canSave) return;
     final name = controller.text.trim();
-    Navigator.of(context).pop(
-      NewHabitResult(name: name, icon: selectedIcon, color: selectedColor),
+    Navigator.of(
+      context,
+    ).pop(NewHabitResult(name: name, icon: selectedIcon, color: selectedColor));
+  }
+
+  Future<void> pickReminderTime() async {
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: reminderTime,
     );
+
+    if (!mounted || pickedTime == null) {
+      return;
+    }
+
+    setState(() {
+      reminderTime = pickedTime;
+    });
   }
 
   @override
@@ -43,7 +71,7 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text("Habit Name", style: Theme.of(context).textTheme.titleSmall),
+            Text("Habit Name", style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             TextField(
               controller: controller,
@@ -56,7 +84,8 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
             const SizedBox(height: 24),
             HabitFrequencies(
               selectedFrequency: selectedFrequency,
-              onSelected: (frequency) => setState(() => selectedFrequency = frequency),
+              onSelected: (frequency) =>
+                  setState(() => selectedFrequency = frequency),
             ),
             const SizedBox(height: 24),
             HabitIcons(
@@ -68,6 +97,15 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
               selectedColor: selectedColor,
               onSelected: (color) => setState(() => selectedColor = color),
             ),
+            const SizedBox(height: 24),
+            HabitReminder(
+              isEnabled: reminderEnabled,
+              onChanged: (value) => setState(() => reminderEnabled = value),
+            ),
+            if (reminderEnabled) ...[
+              const SizedBox(height: 16),
+              HabitReminderTime(timeLabel: reminderTimeLabel, onTap: pickReminderTime),
+            ],
             const SizedBox(height: 32),
             FilledButton(
               onPressed: canSave ? saveHabit : null,
