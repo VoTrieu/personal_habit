@@ -21,23 +21,30 @@ class HabitColors extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 12,
-      alignment: WrapAlignment.spaceAround,
-      children: habitColors.map((color) {
-        final isSelected = selectedColor == color;
-        return InkWell(
-          onTap: () => onSelected(color),
-          borderRadius: BorderRadius.circular(24),
-          child: CircleAvatar(
-            radius: 22,
-            backgroundColor: color,
-            child: isSelected
-                ? const Icon(Icons.check, color: Colors.white)
-                : null,
-          ),
-        );
-      }).toList(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('Color', style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 12,
+          alignment: WrapAlignment.spaceAround,
+          children: habitColors.map((color) {
+            final isSelected = selectedColor == color;
+            return InkWell(
+              onTap: () => onSelected(color),
+              borderRadius: BorderRadius.circular(24),
+              child: CircleAvatar(
+                radius: 22,
+                backgroundColor: color,
+                child: isSelected
+                    ? const Icon(Icons.check, color: Colors.white)
+                    : null,
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

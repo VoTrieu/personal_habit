@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/new_habit_result.dart';
 import 'widgets/habit_colors.dart';
+import 'widgets/habit_frequencies.dart';
 import 'widgets/habit_icons.dart';
 
 class NewHabitScreen extends StatefulWidget {
@@ -15,6 +16,8 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
   final controller = TextEditingController();
   Color selectedColor = habitColors[0];
   IconData selectedIcon = habitIcons[0];
+  String selectedFrequency = habitFrequencies[0];
+
 
   bool get canSave => controller.text.trim().isNotEmpty;
 
@@ -51,15 +54,16 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 24),
-            Text('Icon', style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: 12),
+            HabitFrequencies(
+              selectedFrequency: selectedFrequency,
+              onSelected: (frequency) => setState(() => selectedFrequency = frequency),
+            ),
+            const SizedBox(height: 24),
             HabitIcons(
               selectedIcon: selectedIcon,
               onSelected: (icon) => setState(() => selectedIcon = icon),
             ),
             const SizedBox(height: 24),
-            Text('Color', style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: 12),
             HabitColors(
               selectedColor: selectedColor,
               onSelected: (color) => setState(() => selectedColor = color),

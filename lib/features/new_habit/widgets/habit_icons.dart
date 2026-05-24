@@ -21,24 +21,31 @@ class HabitIcons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 12,
-      alignment: WrapAlignment.spaceAround,
-      children: habitIcons.map((icon) {
-        final isSelected = selectedIcon == icon;
-        return InkWell(
-          onTap: () => onSelected(icon),
-          borderRadius: BorderRadius.circular(28),
-          child: CircleAvatar(
-            radius: 24,
-            backgroundColor: isSelected
-                ? const Color(0xFF00897B)
-                : Colors.black12,
-            foregroundColor: isSelected ? Colors.white : Colors.black54,
-            child: Icon(icon),
-          ),
-        );
-      }).toList(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('Icon', style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 12,
+          alignment: WrapAlignment.spaceAround,
+          children: habitIcons.map((icon) {
+            final isSelected = selectedIcon == icon;
+            return InkWell(
+              onTap: () => onSelected(icon),
+              borderRadius: BorderRadius.circular(28),
+              child: CircleAvatar(
+                radius: 24,
+                backgroundColor: isSelected
+                    ? const Color(0xFF00897B)
+                    : Colors.black12,
+                foregroundColor: isSelected ? Colors.white : Colors.black54,
+                child: Icon(icon),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }
