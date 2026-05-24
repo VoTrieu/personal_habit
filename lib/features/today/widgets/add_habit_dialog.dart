@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_dimensions.dart';
 
 class AddHabitDialog extends StatefulWidget {
-  const AddHabitDialog({
-    super.key,
-    this.initialName,
-    this.initialIcon,
-  });
+  const AddHabitDialog({super.key, this.initialName, this.initialIcon});
 
   final String? initialName;
   final IconData? initialIcon;
@@ -20,7 +17,8 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
   final _controller = TextEditingController();
   IconData? _selectedIcon;
 
-  bool get canSubmit => _controller.text.trim().isNotEmpty && _selectedIcon != null;
+  bool get canSubmit =>
+      _controller.text.trim().isNotEmpty && _selectedIcon != null;
 
   @override
   void initState() {
@@ -49,9 +47,9 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
             decoration: const InputDecoration(labelText: 'Habit Name'),
             onChanged: (_) => setState(() {}),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Wrap(
-            spacing: 8,
+            spacing: AppSpacing.sm,
             children: [
               _iconOption(Icons.menu_book),
               _iconOption(Icons.water_drop),
@@ -59,7 +57,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
               _iconOption(Icons.fitness_center),
               _iconOption(Icons.self_improvement),
             ],
-          )
+          ),
         ],
       ),
       actions: [
@@ -68,14 +66,16 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: canSubmit ? () {
-              Navigator.of(context).pop({
-                'name': _controller.text.trim(),
-                'icon': _selectedIcon,
-              });
-            } : null,
+          onPressed: canSubmit
+              ? () {
+                  Navigator.of(context).pop({
+                    'name': _controller.text.trim(),
+                    'icon': _selectedIcon,
+                  });
+                }
+              : null,
           child: Text(isEditing ? 'Save' : 'Add'),
-        )
+        ),
       ],
     );
   }
@@ -85,10 +85,14 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
     return GestureDetector(
       onTap: () => setState(() => _selectedIcon = icon),
       child: CircleAvatar(
-        backgroundColor: isSelected ? Colors.blue : Colors.grey[300],
-        child: Icon(icon, color: isSelected ? Colors.white : AppColors.textMuted),
+        backgroundColor: isSelected
+            ? AppColors.primary
+            : AppColors.optionBackground,
+        child: Icon(
+          icon,
+          color: isSelected ? AppColors.white : AppColors.textMuted,
+        ),
       ),
     );
   }
-  
 }

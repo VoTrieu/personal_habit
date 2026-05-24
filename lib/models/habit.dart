@@ -11,7 +11,6 @@ class Habit {
   final bool reminderEnabled;
   final TimeOfDay reminderTime;
 
-
   const Habit({
     required this.id,
     required this.name,

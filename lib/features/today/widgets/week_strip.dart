@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../theme/app_colors.dart';
+import '../../../theme/app_dimensions.dart';
+
 class WeekStrip extends StatelessWidget {
   const WeekStrip({super.key});
 
@@ -16,10 +19,13 @@ class WeekStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.fieldVertical,
+        vertical: AppSpacing.md,
+      ),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black12),
-        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.borderLight),
+        borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,30 +47,25 @@ class _WeekDayItem extends StatelessWidget {
 
     return Column(
       children: [
-        Text(
-          day.label,
-          style: Theme.of(context).textTheme.bodySmall,
-          ),
-        const SizedBox(height: 2),
-        Text(
-          day.date,
-          style: Theme.of(context).textTheme.bodySmall
-        ),
-        const SizedBox(height: 8),
+        Text(day.label, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: AppSpacing.xxs),
+        Text(day.date, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: AppSpacing.sm),
         CircleAvatar(
-          radius: 13,
-          backgroundColor: isFilled ? colorScheme.primary : Colors.transparent,
-          foregroundColor: isFilled ? Colors.white : Colors.black45,
-          child: day.isCompleted 
-          ? const Icon(Icons.check, size: 16)
-          : Text(
-            day.date,
-            style: const TextStyle(fontSize: 11)
-          ),
+          radius: AppSizes.weekDayRadius,
+          backgroundColor: isFilled
+              ? colorScheme.primary
+              : AppColors.transparent,
+          foregroundColor: isFilled ? AppColors.white : AppColors.iconSubtle,
+          child: day.isCompleted
+              ? const Icon(Icons.check, size: AppSizes.weekCheckIconSize)
+              : Text(
+                  day.date,
+                  style: const TextStyle(fontSize: AppSizes.weekDateFontSize),
+                ),
         ),
-      ]
+      ],
     );
-   
   }
 }
 

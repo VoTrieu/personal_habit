@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../theme/app_dimensions.dart';
+
 class HabitSummary extends StatelessWidget {
   final int bestStreak;
   final int completedCount;
@@ -23,9 +25,9 @@ class HabitSummary extends StatelessWidget {
           '$completedCount of $totalCount habits completed',
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         LinearProgressIndicator(value: completionProgress),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'Best Streak: $bestStreak days',
           style: Theme.of(context).textTheme.bodyMedium,

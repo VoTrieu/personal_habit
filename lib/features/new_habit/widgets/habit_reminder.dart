@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_dimensions.dart';
 
 class HabitReminder extends StatelessWidget {
   const HabitReminder({
@@ -21,7 +22,7 @@ class HabitReminder extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Reminder', style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 'Get reminded to stay on track',
                 style: Theme.of(

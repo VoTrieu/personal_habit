@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_dimensions.dart';
 
 const habitIcons = [
   Icons.menu_book,
@@ -27,21 +28,23 @@ class HabitIcons extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text('Icon', style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Wrap(
-          spacing: 12,
+          spacing: AppSpacing.md,
           alignment: WrapAlignment.spaceAround,
           children: habitIcons.map((icon) {
             final isSelected = selectedIcon == icon;
             return InkWell(
               onTap: () => onSelected(icon),
-              borderRadius: BorderRadius.circular(28),
+              borderRadius: BorderRadius.circular(AppRadius.round),
               child: CircleAvatar(
-                radius: 24,
+                radius: AppSizes.habitIconRadius,
                 backgroundColor: isSelected
                     ? AppColors.primary
-                    : Colors.black12,
-                foregroundColor: isSelected ? Colors.white : AppColors.textMuted,
+                    : AppColors.optionBackground,
+                foregroundColor: isSelected
+                    ? AppColors.white
+                    : AppColors.textMuted,
                 child: Icon(icon),
               ),
             );

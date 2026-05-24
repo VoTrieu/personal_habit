@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:personal_habit/features/new_habit/widgets/habit_reminder.dart';
 
 import '../../models/new_habit_result.dart';
-import '../../theme/app_colors.dart';
+import '../../theme/app_dimensions.dart';
 import '../../utils/time_formatters.dart';
 import 'widgets/habit_colors.dart';
 import 'widgets/habit_frequencies.dart';
@@ -71,13 +71,13 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
           children: [
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.screen),
                 children: [
                   Text(
                     "Habit Name",
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   TextField(
                     controller: controller,
                     decoration: const InputDecoration(
@@ -86,31 +86,31 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
                     ),
                     onChanged: (_) => setState(() {}),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   HabitFrequencies(
                     selectedFrequency: selectedFrequency,
                     onSelected: (frequency) =>
                         setState(() => selectedFrequency = frequency),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   HabitIcons(
                     selectedIcon: selectedIcon,
                     onSelected: (icon) => setState(() => selectedIcon = icon),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   HabitColors(
                     selectedColor: selectedColor,
                     onSelected: (color) =>
                         setState(() => selectedColor = color),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   HabitReminder(
                     isEnabled: reminderEnabled,
                     onChanged: (value) =>
                         setState(() => reminderEnabled = value),
                   ),
                   if (reminderEnabled) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     HabitReminderTime(
                       timeLabel: formatTimeOfDay(reminderTime),
                       onTap: pickReminderTime,
@@ -120,23 +120,17 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.screen,
+                AppSpacing.md,
+                AppSpacing.screen,
+                AppSpacing.screen,
+              ),
               child: SizedBox(
                 width: double.infinity,
-                height: 54,
+                height: AppSizes.buttonHeight,
                 child: FilledButton(
                   onPressed: canSave ? saveHabit : null,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor: Colors.black12,
-                    disabledForegroundColor: Colors.black38,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    textStyle: Theme.of(context).textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
                   child: const Text('Save Habit'),
                 ),
               ),

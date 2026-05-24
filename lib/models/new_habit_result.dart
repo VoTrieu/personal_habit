@@ -15,5 +15,5 @@ class NewHabitResult {
     required this.frequency,
     required this.reminderEnabled,
     required this.reminderTime,
-  }); 
+  });
 }

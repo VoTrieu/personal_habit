@@ -3,7 +3,7 @@ import 'package:personal_habit/models/new_habit_result.dart';
 
 import '../../data/sample_habits.dart';
 import '../../models/habit.dart';
-import '../../theme/app_colors.dart';
+import '../../theme/app_dimensions.dart';
 import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
 import '../new_habit/new_habit_screen.dart';
@@ -172,19 +172,19 @@ class _TodayScreenState extends State<TodayScreen> {
       body: SafeArea(
         child: hasHabits
             ? ListView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.screen),
                 children: [
                   const TodayHeader(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.headerToWeek),
                   const WeekStrip(),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   HabitSummary(
                     bestStreak: bestStreak,
                     completedCount: completedCount,
                     totalCount: habits.length,
                     completionProgress: completionProgress,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   ...habits.map((habit) {
                     return HabitTile(
                       habit: habit,
@@ -203,10 +203,8 @@ class _TodayScreenState extends State<TodayScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: addHabit,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
         shape: const CircleBorder(),
-        child: const Icon(Icons.add, size: 32),
+        child: const Icon(Icons.add, size: AppSizes.floatingActionIconSize),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );

@@ -22,10 +22,7 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: selectedIndex,
-        children: pages,
-      ),
+      body: IndexedStack(index: selectedIndex, children: pages),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
@@ -61,21 +58,15 @@ class _AppShellState extends State<AppShell> {
 }
 
 class _PlaceholderTab extends StatelessWidget {
-  const _PlaceholderTab({
-    required this.title,
-  });
+  const _PlaceholderTab({required this.title});
 
   final String title;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: Center(
-        child: Text('$title coming soon'),
-      ),
+      appBar: AppBar(title: Text(title)),
+      body: Center(child: Text('$title coming soon')),
     );
   }
 }

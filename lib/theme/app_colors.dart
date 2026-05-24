@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 class AppColors {
   const AppColors._();
 
+  static const white = Colors.white;
+  static const transparent = Colors.transparent;
+
   static const primary = Color(0xFF00897B);
 
   static const habitTeal = Color(0xFF00897B);
@@ -14,6 +17,10 @@ class AppColors {
 
   static const textMuted = Colors.black54;
   static const border = Colors.black26;
+  static const borderLight = Colors.black12;
+  static const iconMuted = Colors.black26;
+  static const iconSubtle = Colors.black45;
+  static const optionBackground = Colors.black12;
   static const disabledBackground = Colors.black12;
   static const disabledForeground = Colors.black38;
 }

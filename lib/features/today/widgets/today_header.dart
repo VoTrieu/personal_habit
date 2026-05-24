@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_dimensions.dart';
 
 class TodayHeader extends StatelessWidget {
   const TodayHeader({super.key});
@@ -16,14 +17,15 @@ class TodayHeader extends StatelessWidget {
               Text(
                 'Today',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 'Fri, May 23',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textMuted,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: AppColors.textMuted),
               ),
             ],
           ),

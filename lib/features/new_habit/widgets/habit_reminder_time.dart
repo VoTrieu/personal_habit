@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../theme/app_colors.dart';
+import '../../../theme/app_dimensions.dart';
+
 class HabitReminderTime extends StatelessWidget {
   const HabitReminderTime({
     super.key,
@@ -16,15 +19,18 @@ class HabitReminderTime extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Time', style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppRadius.sm),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.fieldVertical,
+            ),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.black26),
-              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.border),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
             child: Row(
               children: [

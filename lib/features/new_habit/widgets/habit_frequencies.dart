@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../theme/app_dimensions.dart';
+
 const habitFrequencies = ['Daily', 'Weekday', 'Weekly', 'Custom'];
 
 class HabitFrequencies extends StatelessWidget {
@@ -18,14 +20,14 @@ class HabitFrequencies extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text('Frequency', style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         SegmentedButton<String>(
           showSelectedIcon: false,
           style: SegmentedButton.styleFrom(
-            minimumSize: const Size(0, 52),
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            minimumSize: const Size(0, AppSizes.frequencyHeight),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
           ),
           segments: habitFrequencies.map((frequency) {

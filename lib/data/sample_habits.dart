@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/habit.dart';
+import '../theme/app_colors.dart';
 
 const sampleHabits = [
   Habit(
@@ -9,7 +10,7 @@ const sampleHabits = [
     icon: Icons.menu_book,
     streak: 3,
     isCompletedToday: false,
-    color: Color(0xFF00897B),
+    color: AppColors.habitTeal,
     frequency: 'Daily',
     reminderEnabled: true,
     reminderTime: TimeOfDay(hour: 10, minute: 30),
@@ -20,7 +21,7 @@ const sampleHabits = [
     icon: Icons.water_drop,
     streak: 5,
     isCompletedToday: true,
-    color: Color(0xFFFF5A4E),
+    color: AppColors.habitCoral,
     frequency: 'Daily',
     reminderEnabled: true,
     reminderTime: TimeOfDay(hour: 19, minute: 30),
@@ -31,7 +32,7 @@ const sampleHabits = [
     icon: Icons.directions_walk,
     streak: 2,
     isCompletedToday: false,
-    color: Color(0xFFFFB020),
+    color: AppColors.habitAmber,
     frequency: 'Weekday',
     reminderEnabled: true,
     reminderTime: TimeOfDay(hour: 8, minute: 30),

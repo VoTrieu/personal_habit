@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../models/habit.dart';
 import '../../../theme/app_colors.dart';
+import '../../../theme/app_dimensions.dart';
 
 class HabitTile extends StatelessWidget {
   const HabitTile({
@@ -20,18 +21,18 @@ class HabitTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onOpen,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.tile),
         child: Row(
           children: [
             CircleAvatar(
-              radius: 24,
+              radius: AppSizes.habitIconRadius,
               backgroundColor: habit.color,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.white,
               child: Icon(habit.icon),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: AppSpacing.fieldVertical),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +41,7 @@ class HabitTile extends StatelessWidget {
                     habit.name,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     habit.reminderEnabled
                         ? '${habit.frequency} • ${habit.streak} day streak • Reminder on'
@@ -60,8 +61,10 @@ class HabitTile extends StatelessWidget {
                 habit.isCompletedToday
                     ? Icons.check_circle
                     : Icons.circle_outlined,
-                size: 36,
-                color: habit.isCompletedToday ? habit.color : Colors.black26,
+                size: AppSizes.checkIconSize,
+                color: habit.isCompletedToday
+                    ? habit.color
+                    : AppColors.iconMuted,
               ),
             ),
             IconButton(
