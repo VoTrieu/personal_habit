@@ -41,10 +41,14 @@ class HabitTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${habit.streak} day streak',
+                    habit.reminderEnabled
+                        ? '${habit.frequency} • ${habit.streak} day streak • Reminder on'
+                        : '${habit.frequency} • ${habit.streak} day streak',
                     style: Theme.of(
                       context,
                     ).textTheme.bodySmall?.copyWith(color: Colors.black54),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
