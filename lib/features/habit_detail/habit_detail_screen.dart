@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:personal_habit/theme/app_colors.dart';
 
+import '../../theme/app_colors.dart';
 import '../../models/habit.dart';
 import '../../theme/app_dimensions.dart';
 import '../../utils/time_formatters.dart';

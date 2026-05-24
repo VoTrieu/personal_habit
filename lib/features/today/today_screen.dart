@@ -4,6 +4,7 @@ import '../../data/sample_habits.dart';
 import '../../models/habit.dart';
 import '../../models/new_habit_result.dart';
 import '../../theme/app_dimensions.dart';
+import '../../widgets/completion_week_strip.dart';
 import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
 import '../new_habit/new_habit_screen.dart';
@@ -174,7 +175,7 @@ class _TodayScreenState extends State<TodayScreen> {
                 children: [
                   const TodayHeader(),
                   const SizedBox(height: AppSpacing.headerToWeek),
-                  const CompletionWeekStrip(
+                  const CompletionWeekStrip (
                     showBorder: true,
                     days: [
                       CompletionDay(label: 'Mon', date: '18', isCompleted: true),
