@@ -64,19 +64,26 @@ class HabitDetailScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.xl),
-            const SizedBox(height: AppSpacing.sm),
-            Text('Frequency: ${habit.frequency}'),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              habit.reminderEnabled
-                  ? 'Reminder ${formatTimeOfDay(habit.reminderTime)}'
-                  : 'Reminder Off',
+            _HabitInfoRow(
+              icon: Icons.repeat,
+              label: 'Frequency',
+              value: habit.frequency,
             ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              habit.isCompletedToday
-                  ? 'Completed today'
-                  : 'Not completed today',
+            const SizedBox(height: AppSpacing.md),
+            _HabitInfoRow(
+              icon: Icons.notifications_outlined,
+              label: 'Reminder',
+              value: habit.reminderEnabled
+                  ? formatTimeOfDay(habit.reminderTime)
+                  : 'Off',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _HabitInfoRow(
+              icon: habit.isCompletedToday
+                  ? Icons.check_circle_outline
+                  : Icons.radio_button_unchecked,
+              label: 'Status',
+              value: habit.isCompletedToday ? 'Completed' : 'Not Completed',
             ),
             const SizedBox(height: AppSpacing.xl),
             FilledButton.icon(
@@ -139,6 +146,41 @@ class _DetailStat extends StatelessWidget {
           style: Theme.of(
             context,
           ).textTheme.bodySmall?.copyWith(color: AppColors.textMuted),
+        ),
+      ],
+    );
+  }
+}
+
+class _HabitInfoRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _HabitInfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: AppSizes.habitIconRadius,
+          backgroundColor: AppColors.optionBackground,
+          foregroundColor: AppColors.textMuted,
+          child: Icon(icon),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: AppSpacing.xs),
+            Text(value, style: Theme.of(context).textTheme.titleMedium),
+          ],
         ),
       ],
     );
