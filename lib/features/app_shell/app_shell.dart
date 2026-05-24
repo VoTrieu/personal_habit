@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../insights/insights_screen.dart';
 import '../today/today_screen.dart';
 
 class AppShell extends StatefulWidget {
@@ -15,7 +16,7 @@ class _AppShellState extends State<AppShell> {
   final pages = const [
     TodayScreen(),
     _PlaceholderTab(title: 'Habits'),
-    _PlaceholderTab(title: 'Insights'),
+    InsightsScreen(),
     _PlaceholderTab(title: 'Profile'),
   ];
 
