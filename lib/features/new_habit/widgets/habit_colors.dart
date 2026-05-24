@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import '../../../theme/app_colors.dart';
 
 const habitColors = [
-  Color(0xFF00897B),
-  Color(0xFFFF5A4E),
-  Color(0xFFFFB020),
-  Color(0xFF3F6FE5),
-  Color(0xFF6B46C1),
-  Color(0xFF16A34A),
+  AppColors.habitTeal,
+  AppColors.habitCoral,
+  AppColors.habitAmber,
+  AppColors.habitBlue,
+  AppColors.habitPurple,
+  AppColors.habitGreen,
 ];
 
 class HabitColors extends StatelessWidget {

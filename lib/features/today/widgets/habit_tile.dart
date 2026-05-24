@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/habit.dart';
+import '../../../theme/app_colors.dart';
 
 class HabitTile extends StatelessWidget {
   const HabitTile({
@@ -46,7 +47,7 @@ class HabitTile extends StatelessWidget {
                         : '${habit.frequency} • ${habit.streak} day streak',
                     style: Theme.of(
                       context,
-                    ).textTheme.bodySmall?.copyWith(color: Colors.black54),
+                    ).textTheme.bodySmall?.copyWith(color: AppColors.textMuted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

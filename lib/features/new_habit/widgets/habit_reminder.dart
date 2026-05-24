@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../theme/app_colors.dart';
+
 class HabitReminder extends StatelessWidget {
   const HabitReminder({
     super.key,
@@ -24,7 +26,7 @@ class HabitReminder extends StatelessWidget {
                 'Get reminded to stay on track',
                 style: Theme.of(
                   context,
-                ).textTheme.bodySmall?.copyWith(color: Colors.black54),
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textMuted),
               ),
             ],
           ),

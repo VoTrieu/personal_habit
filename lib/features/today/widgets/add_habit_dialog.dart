@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../theme/app_colors.dart';
+
 class AddHabitDialog extends StatefulWidget {
   const AddHabitDialog({
     super.key,
@@ -84,7 +86,7 @@ class _AddHabitDialogState extends State<AddHabitDialog> {
       onTap: () => setState(() => _selectedIcon = icon),
       child: CircleAvatar(
         backgroundColor: isSelected ? Colors.blue : Colors.grey[300],
-        child: Icon(icon, color: isSelected ? Colors.white : Colors.black54),
+        child: Icon(icon, color: isSelected ? Colors.white : AppColors.textMuted),
       ),
     );
   }

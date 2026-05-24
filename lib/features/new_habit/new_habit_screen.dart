@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:personal_habit/features/new_habit/widgets/habit_reminder.dart';
 
 import '../../models/new_habit_result.dart';
+import '../../theme/app_colors.dart';
 import '../../utils/time_formatters.dart';
 import 'widgets/habit_colors.dart';
 import 'widgets/habit_frequencies.dart';
@@ -126,7 +127,7 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
                 child: FilledButton(
                   onPressed: canSave ? saveHabit : null,
                   style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFF00897B),
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     disabledBackgroundColor: Colors.black12,
                     disabledForegroundColor: Colors.black38,

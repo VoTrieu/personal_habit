@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../theme/app_colors.dart';
+
 const habitIcons = [
   Icons.menu_book,
   Icons.water_drop,
@@ -37,9 +39,9 @@ class HabitIcons extends StatelessWidget {
               child: CircleAvatar(
                 radius: 24,
                 backgroundColor: isSelected
-                    ? const Color(0xFF00897B)
+                    ? AppColors.primary
                     : Colors.black12,
-                foregroundColor: isSelected ? Colors.white : Colors.black54,
+                foregroundColor: isSelected ? Colors.white : AppColors.textMuted,
                 child: Icon(icon),
               ),
             );

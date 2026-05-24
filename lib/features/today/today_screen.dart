@@ -3,6 +3,7 @@ import 'package:personal_habit/models/new_habit_result.dart';
 
 import '../../data/sample_habits.dart';
 import '../../models/habit.dart';
+import '../../theme/app_colors.dart';
 import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
 import '../new_habit/new_habit_screen.dart';
@@ -202,7 +203,7 @@ class _TodayScreenState extends State<TodayScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: addHabit,
-        backgroundColor: const Color(0xFF00897B),
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         shape: const CircleBorder(),
         child: const Icon(Icons.add, size: 32),

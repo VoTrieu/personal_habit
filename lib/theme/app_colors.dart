@@ -1,0 +1,19 @@
+import 'package:flutter/material.dart';
+
+class AppColors {
+  const AppColors._();
+
+  static const primary = Color(0xFF00897B);
+
+  static const habitTeal = Color(0xFF00897B);
+  static const habitCoral = Color(0xFFFF5A4E);
+  static const habitAmber = Color(0xFFFFB020);
+  static const habitBlue = Color(0xFF3F6FE5);
+  static const habitPurple = Color(0xFF6B46C1);
+  static const habitGreen = Color(0xFF16A34A);
+
+  static const textMuted = Colors.black54;
+  static const border = Colors.black26;
+  static const disabledBackground = Colors.black12;
+  static const disabledForeground = Colors.black38;
+}
