@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:personal_habit/models/new_habit_result.dart';
 
 import '../../data/sample_habits.dart';
 import '../../models/habit.dart';
+import '../../models/new_habit_result.dart';
 import '../../theme/app_dimensions.dart';
 import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
@@ -11,8 +11,6 @@ import 'widgets/add_habit_dialog.dart';
 import 'widgets/habit_summary.dart';
 import 'widgets/habit_tile.dart';
 import 'widgets/today_header.dart';
-import 'widgets/week_strip.dart';
-
 class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key});
   @override
@@ -176,7 +174,18 @@ class _TodayScreenState extends State<TodayScreen> {
                 children: [
                   const TodayHeader(),
                   const SizedBox(height: AppSpacing.headerToWeek),
-                  const WeekStrip(),
+                  const CompletionWeekStrip(
+                    showBorder: true,
+                    days: [
+                      CompletionDay(label: 'Mon', date: '18', isCompleted: true),
+                      CompletionDay(label: 'Tue', date: '19', isCompleted: true),
+                      CompletionDay(label: 'Wed', date: '20', isCompleted: false),
+                      CompletionDay(label: 'Thu', date: '21'),
+                      CompletionDay(label: 'Fri', date: '22', isToday: true),
+                      CompletionDay(label: 'Sat', date: '23'),
+                      CompletionDay(label: 'Sun', date: '24'),
+                    ]
+                  ),
                   const SizedBox(height: AppSpacing.xl),
                   HabitSummary(
                     bestStreak: bestStreak,
