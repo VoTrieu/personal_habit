@@ -74,7 +74,7 @@ class _TodayScreenState extends State<TodayScreen> {
           icon: result.icon,
           streak: 0,
           isCompletedToday: false,
-          color: const Color(0xFF00897B),
+          color: result.color,
         ),
       ];
     });

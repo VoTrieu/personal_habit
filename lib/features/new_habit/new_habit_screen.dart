@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../models/new_habit_result.dart';
+import 'widgets/habit_colors.dart';
+import 'widgets/habit_icons.dart';
 
 class NewHabitScreen extends StatefulWidget {
   const NewHabitScreen({super.key});
@@ -11,9 +13,10 @@ class NewHabitScreen extends StatefulWidget {
 
 class _NewHabitScreenState extends State<NewHabitScreen> {
   final controller = TextEditingController();
-  IconData? selectedIcon;
+  Color selectedColor = habitColors[0];
+  IconData selectedIcon = habitIcons[0];
 
-  bool get canSave => controller.text.trim().isNotEmpty && selectedIcon != null;
+  bool get canSave => controller.text.trim().isNotEmpty;
 
   @override
   void dispose() {
@@ -24,19 +27,13 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
   void saveHabit() {
     if (!canSave) return;
     final name = controller.text.trim();
-    Navigator.of(context).pop(NewHabitResult(name: name, icon: selectedIcon!));
+    Navigator.of(context).pop(
+      NewHabitResult(name: name, icon: selectedIcon, color: selectedColor),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final icons = [
-      Icons.menu_book,
-      Icons.water_drop,
-      Icons.directions_walk,
-      Icons.fitness_center,
-      Icons.self_improvement,
-    ];
-
     return Scaffold(
       appBar: AppBar(title: const Text('New Habit')),
       body: SafeArea(
@@ -56,27 +53,16 @@ class _NewHabitScreenState extends State<NewHabitScreen> {
             const SizedBox(height: 24),
             Text('Icon', style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              children: icons.map((icon) {
-                final isSelected = selectedIcon == icon;
-                return InkWell(
-                  onTap: () {
-                    setState(() {
-                      selectedIcon = icon;
-                    });
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: CircleAvatar(
-                    radius: 24,
-                    backgroundColor: isSelected
-                        ? const Color(0xFF00897B)
-                        : Colors.black12,
-                    foregroundColor: isSelected ? Colors.white : Colors.black54,
-                    child: Icon(icon, size: 32),
-                  ),
-                );
-              }).toList(),
+            HabitIcons(
+              selectedIcon: selectedIcon,
+              onSelected: (icon) => setState(() => selectedIcon = icon),
+            ),
+            const SizedBox(height: 24),
+            Text('Color', style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 12),
+            HabitColors(
+              selectedColor: selectedColor,
+              onSelected: (color) => setState(() => selectedColor = color),
             ),
             const SizedBox(height: 32),
             FilledButton(
