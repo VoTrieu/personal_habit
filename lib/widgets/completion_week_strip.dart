@@ -1,59 +1,54 @@
-
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_dimensions.dart';
 
 class CompletionWeekStrip extends StatelessWidget {
-    final List<CompletionDay> days;
-    final String? title;
-    final bool showBorder;
+  final List<CompletionDay> days;
+  final String? title;
+  final bool showBorder;
 
-    const CompletionWeekStrip({
-      super.key,
-      required this.days,
-      this.title,
-      this.showBorder = false,
-    });
+  const CompletionWeekStrip({
+    super.key,
+    required this.days,
+    this.title,
+    this.showBorder = false,
+  });
 
-    @override
-    Widget build(BuildContext context) {
-      final content = Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: days.map((day) => _CompletionDayItem(day: day)).toList(),
-      );
+  @override
+  Widget build(BuildContext context) {
+    final content = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: days.map((day) => _CompletionDayItem(day: day)).toList(),
+    );
 
-      final child = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (title != null) ...[
-            Text(
-              title!,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: AppSpacing.md),
-          ],
-          content,
+    final child = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (title != null) ...[
+          Text(title!, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: AppSpacing.md),
         ],
-      );
+        content,
+      ],
+    );
 
-      if (!showBorder) {
-        return child;
-      }
-
-      return Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.fieldVertical,
-          vertical: AppSpacing.md,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.borderLight),
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-        ),
-        child: child,
-      
-      );
+    if (!showBorder) {
+      return child;
     }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.fieldVertical,
+        vertical: AppSpacing.md,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.borderLight),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+      ),
+      child: child,
+    );
+  }
 }
 
 class CompletionDay {
@@ -96,7 +91,7 @@ class _CompletionDayItem extends StatelessWidget {
                   style: const TextStyle(fontSize: AppSizes.weekDateFontSize),
                 ),
         ),
-      ]
+      ],
     );
   }
 }

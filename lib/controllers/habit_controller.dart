@@ -32,9 +32,16 @@ class HabitController extends ChangeNotifier {
   Future<void> loadHabits() async {
     _isLoading = true;
     notifyListeners();
-    _habits = await _database.getHabits();
-    _isLoading = false;
-    notifyListeners();
+
+    try {
+      _habits = await _database.getHabits();
+    } catch (error) {
+      debugPrint('Failed to load habits: $error');
+      _habits = [];
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> addHabit(Habit habit) async {
@@ -65,8 +72,13 @@ class HabitController extends ChangeNotifier {
 
   Future<void> toggleHabitCompletion(String habitId) async {
     final habit = habits.firstWhere((h) => h.id == habitId);
+    final isNowCompleted = !habit.isCompletedToday;
+
     final updatedHabit = habit.copyWith(
-      isCompletedToday: !habit.isCompletedToday,
+      isCompletedToday: isNowCompleted,
+      streak: isNowCompleted
+          ? habit.streak + 1
+          : (habit.streak > 0 ? habit.streak - 1 : 0),
     );
     await updateHabit(updatedHabit);
   }

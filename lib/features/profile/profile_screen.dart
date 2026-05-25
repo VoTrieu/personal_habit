@@ -19,7 +19,10 @@ class ProfileScreen extends StatelessWidget {
               radius: AppSizes.profileAvatarRadius,
               backgroundColor: AppColors.primary,
               foregroundColor: AppColors.white,
-              child: const Icon(Icons.person, size: AppSizes.profileAvatarIconSize),
+              child: const Icon(
+                Icons.person,
+                size: AppSizes.profileAvatarIconSize,
+              ),
             ),
             const SizedBox(height: AppSpacing.lg),
             Center(

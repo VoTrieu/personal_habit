@@ -66,7 +66,7 @@ class Habit {
     return Habit(
       id: map['id'] as String,
       name: map['name'] as String,
-      icon: IconData(map['iconCodePoint'] as int, fontFamily: 'MaterialIcons'),
+      icon: _iconFromCodePoint(map['iconCodePoint'] as int),
       isCompletedToday: (map['isCompletedToday'] as int) == 1,
       streak: map['streak'] as int,
       color: Color(map['colorValue'] as int),
@@ -78,4 +78,21 @@ class Habit {
       ),
     );
   }
+}
+
+IconData _iconFromCodePoint(int codePoint) {
+  if (codePoint == Icons.menu_book.codePoint) return Icons.menu_book;
+  if (codePoint == Icons.water_drop.codePoint) return Icons.water_drop;
+  if (codePoint == Icons.directions_walk.codePoint) {
+    return Icons.directions_walk;
+  }
+  if (codePoint == Icons.fitness_center.codePoint) {
+    return Icons.fitness_center;
+  }
+  if (codePoint == Icons.self_improvement.codePoint) {
+    return Icons.self_improvement;
+  }
+  if (codePoint == Icons.language.codePoint) return Icons.language;
+
+  return Icons.menu_book;
 }

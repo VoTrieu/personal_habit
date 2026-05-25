@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       home: ChangeNotifierProvider(
         create: (_) => HabitController()..loadHabits(),
         child: const AppShell(),
-      )
+      ),
     );
   }
 }

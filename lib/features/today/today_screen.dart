@@ -85,6 +85,8 @@ class _TodayScreenState extends State<TodayScreen> {
         break;
       case HabitDetailAction.edit:
         await editHabit(result.habitId);
+        if (!mounted) return;
+
         final updatedHabit = context.read<HabitController>().findHabitById(
           result.habitId,
         );
