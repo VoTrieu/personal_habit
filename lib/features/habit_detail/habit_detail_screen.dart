@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../controllers/habit_controller.dart';
 import '../../theme/app_colors.dart';
 import '../../models/habit.dart';
 import '../../theme/app_dimensions.dart';
@@ -7,17 +9,34 @@ import '../../utils/time_formatters.dart';
 import '../../widgets/completion_week_strip.dart';
 import 'habit_detail_result.dart';
 
-class HabitDetailScreen extends StatelessWidget {
+class HabitDetailScreen extends StatefulWidget {
   const HabitDetailScreen({super.key, required this.habit});
 
   final Habit habit;
 
+  @override
+  State<HabitDetailScreen> createState() => _HabitDetailScreenState();
+}
+
+class _HabitDetailScreenState extends State<HabitDetailScreen> {
+  late Future<List<String>> completedDatesFuture;
+
   int get totalCompletions {
-    return habit.streak * 4;
+    return widget.habit.streak;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    completedDatesFuture = context.read<HabitController>().getCompletedDates(
+      widget.habit.id,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final habit = widget.habit;
+
     return Scaffold(
       appBar: AppBar(title: Text(habit.name)),
       body: Padding(
@@ -51,17 +70,16 @@ class HabitDetailScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.xxl),
-            const CompletionWeekStrip(
-              title: 'Last 7 days',
-              days: [
-                CompletionDay(label: 'Sat', date: '16', isCompleted: true),
-                CompletionDay(label: 'Sun', date: '17', isCompleted: true),
-                CompletionDay(label: 'Mon', date: '18', isCompleted: true),
-                CompletionDay(label: 'Tue', date: '19', isCompleted: true),
-                CompletionDay(label: 'Wed', date: '20', isCompleted: true),
-                CompletionDay(label: 'Thu', date: '21'),
-                CompletionDay(label: 'Fri', date: '22', isToday: true),
-              ],
+            FutureBuilder<List<String>>(
+              future: completedDatesFuture,
+              builder: (context, snapshot) {
+                final completedDates = snapshot.data ?? [];
+
+                return CompletionWeekStrip(
+                  title: 'Last 7 days',
+                  days: _lastSevenDays(completedDates),
+                );
+              },
             ),
             const SizedBox(height: AppSpacing.xl),
             _HabitInfoRow(
@@ -121,6 +139,23 @@ class HabitDetailScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<CompletionDay> _lastSevenDays(List<String> completedDates) {
+    final today = DateTime.now();
+    final completedDateSet = completedDates.toSet();
+
+    return List.generate(7, (index) {
+      final date = today.subtract(Duration(days: 6 - index));
+      final dateKey = getDateKey(date);
+
+      return CompletionDay(
+        label: getWeekdayLabel(date),
+        date: date.day.toString(),
+        isToday: isSameDate(date, today),
+        isCompleted: completedDateSet.contains(dateKey),
+      );
+    });
   }
 }
 

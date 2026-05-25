@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/habit_database.dart';
 import '../models/habit.dart';
+import '../utils/time_formatters.dart';
 
 class HabitController extends ChangeNotifier {
   HabitController({HabitDatabase? database})
@@ -111,6 +112,31 @@ class HabitController extends ChangeNotifier {
 
   Future<List<String>> getCompletedDates(String habitId) {
     return _database.getCompletedDates(habitId);
+  }
+
+  Future<List<double>> weeklyCompletionRates() async {
+    if (_habits.isEmpty) {
+      return List.filled(7, 0);
+    }
+
+    final today = DateTime.now();
+    final completedDateSets = <String, Set<String>>{};
+
+    for (final habit in _habits) {
+      final completedDates = await getCompletedDates(habit.id);
+      completedDateSets[habit.id] = completedDates.toSet();
+    }
+
+    return List.generate(7, (index) {
+      final date = today.subtract(Duration(days: 6 - index));
+      final dateKey = getDateKey(date);
+
+      final completedCount = _habits.where((habit) {
+        return completedDateSets[habit.id]?.contains(dateKey) ?? false;
+      }).length;
+
+      return completedCount / _habits.length;
+    });
   }
 
   Habit? findHabitById(String habitId) {

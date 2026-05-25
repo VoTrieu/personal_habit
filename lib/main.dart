@@ -14,13 +14,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Personal Habit Tracker',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
-      home: ChangeNotifierProvider(
-        create: (_) => HabitController()..loadHabits(),
-        child: const AppShell(),
+    return ChangeNotifierProvider(
+      create: (_) => HabitController()..loadHabits(),
+      child: MaterialApp(
+        title: 'Personal Habit Tracker',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light(),
+        home: const AppShell(),
       ),
     );
   }

@@ -27,6 +27,7 @@ class HabitDatabase {
         return _createTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
+        await db.execute('DROP TABLE IF EXISTS $_completionsTable');
         await db.execute('DROP TABLE IF EXISTS $_habitsTable');
         await _createTables(db);
       },
@@ -59,6 +60,11 @@ class HabitDatabase {
 
   Future<void> deleteHabit(String habitId) async {
     final db = await database;
+    await db.delete(
+      _completionsTable,
+      where: 'habitId = ?',
+      whereArgs: [habitId],
+    );
     await db.delete(_habitsTable, where: 'id = ?', whereArgs: [habitId]);
   }
 
