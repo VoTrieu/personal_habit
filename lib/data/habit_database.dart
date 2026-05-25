@@ -5,7 +5,7 @@ import '../models/habit.dart';
 
 class HabitDatabase {
   static const _databaseName = 'personal_habit.db';
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
   static const _habitsTable = 'habits';
 
   Database? _database;
@@ -23,19 +23,11 @@ class HabitDatabase {
       path,
       version: _databaseVersion,
       onCreate: (db, version) {
-        return db.execute('''
-          CREATE TABLE $_habitsTable (
-            id TEXT PRIMARY KEY,
-            name TEXT NOT NULL,
-            iconCodePoint INTEGER NOT NULL,
-            isCompletedToday INTEGER NOT NULL,
-            streak INTEGER NOT NULL,
-            colorValue INTEGER NOT NULL,
-            frequency TEXT NOT NULL,
-            reminderEnabled INTEGER NOT NULL,
-            reminderTimeMinutes INTEGER NOT NULL
-          )
-        ''');
+        return _createTables(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        await db.execute('DROP TABLE IF EXISTS $_habitsTable');
+        await _createTables(db);
       },
     );
 
@@ -67,5 +59,21 @@ class HabitDatabase {
   Future<void> deleteHabit(String habitId) async {
     final db = await database;
     await db.delete(_habitsTable, where: 'id = ?', whereArgs: [habitId]);
+  }
+
+  Future<void> _createTables(Database db) {
+    return db.execute('''
+    CREATE TABLE $_habitsTable (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      iconCodePoint INTEGER NOT NULL,
+      isCompletedToday INTEGER NOT NULL,
+      streak INTEGER NOT NULL,
+      colorValue INTEGER NOT NULL,
+      frequency TEXT NOT NULL,
+      reminderEnabled INTEGER NOT NULL,
+      reminderTimeMinutes INTEGER NOT NULL
+    )
+  ''');
   }
 }
