@@ -5,8 +5,9 @@ import '../models/habit.dart';
 
 class HabitDatabase {
   static const _databaseName = 'personal_habit.db';
-  static const _databaseVersion = 2;
+  static const _databaseVersion = 3;
   static const _habitsTable = 'habits';
+  static const _completionsTable = 'habit_completions';
 
   Database? _database;
 
@@ -61,8 +62,53 @@ class HabitDatabase {
     await db.delete(_habitsTable, where: 'id = ?', whereArgs: [habitId]);
   }
 
-  Future<void> _createTables(Database db) {
-    return db.execute('''
+  Future<List<String>> getCompletedDates(String habitId) async {
+    final db = await database;
+    final rows = await db.query(
+      _completionsTable,
+      columns: ['completedDate'],
+      where: 'habitId = ?',
+      whereArgs: [habitId],
+      orderBy: 'completedDate DESC',
+    );
+    return rows.map((row) => row['completedDate'] as String).toList();
+  }
+
+  Future<void> insertCompletion(String habitId, String date) async {
+    final db = await database;
+
+    await db.insert(_completionsTable, {
+      'id': '${habitId}_$date',
+      'habitId': habitId,
+      'completedDate': date,
+    }, conflictAlgorithm: ConflictAlgorithm.ignore);
+  }
+
+  Future<void> deleteCompletion(String habitId, String date) async {
+    final db = await database;
+
+    await db.delete(
+      _completionsTable,
+      where: 'habitId = ? AND completedDate = ?',
+      whereArgs: [habitId, date],
+    );
+  }
+
+  Future<bool> isHabitCompletedOnDate(String habitId, String date) async {
+    final db = await database;
+
+    final rows = await db.query(
+      _completionsTable,
+      where: 'habitId = ? AND completedDate = ?',
+      whereArgs: [habitId, date],
+      limit: 1,
+    );
+
+    return rows.isNotEmpty;
+  }
+
+  Future<void> _createTables(Database db) async {
+    await db.execute('''
     CREATE TABLE $_habitsTable (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -73,6 +119,15 @@ class HabitDatabase {
       frequency TEXT NOT NULL,
       reminderEnabled INTEGER NOT NULL,
       reminderTimeMinutes INTEGER NOT NULL
+    )
+  ''');
+
+    await db.execute('''
+    CREATE TABLE $_completionsTable (
+      id TEXT PRIMARY KEY,
+      habitId TEXT NOT NULL,
+      completedDate TEXT NOT NULL,
+      UNIQUE(habitId, completedDate)
     )
   ''');
   }

@@ -29,12 +29,30 @@ class HabitController extends ChangeNotifier {
     return _habits.map((habit) => habit.streak).reduce((a, b) => a > b ? a : b);
   }
 
+  String todayKey() {
+    final now = DateTime.now();
+    final month = now.month.toString().padLeft(2, '0');
+    final day = now.day.toString().padLeft(2, '0');
+
+    return '${now.year}-$month-$day';
+  }
+
   Future<void> loadHabits() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      _habits = await _database.getHabits();
+      final loadedHabits = await _database.getHabits();
+      final today = todayKey();
+
+      _habits = [];
+      for (final habit in loadedHabits) {
+        final isCompletedToday = await _database.isHabitCompletedOnDate(
+          habit.id,
+          today,
+        );
+        _habits.add(habit.copyWith(isCompletedToday: isCompletedToday));
+      }
     } catch (error) {
       debugPrint('Failed to load habits: $error');
       _habits = [];
@@ -72,7 +90,14 @@ class HabitController extends ChangeNotifier {
 
   Future<void> toggleHabitCompletion(String habitId) async {
     final habit = habits.firstWhere((h) => h.id == habitId);
+    final date = todayKey();
     final isNowCompleted = !habit.isCompletedToday;
+
+    if (isNowCompleted) {
+      await _database.insertCompletion(habitId, date);
+    } else {
+      await _database.deleteCompletion(habitId, date);
+    }
 
     final updatedHabit = habit.copyWith(
       isCompletedToday: isNowCompleted,
@@ -80,7 +105,12 @@ class HabitController extends ChangeNotifier {
           ? habit.streak + 1
           : (habit.streak > 0 ? habit.streak - 1 : 0),
     );
+
     await updateHabit(updatedHabit);
+  }
+
+  Future<List<String>> getCompletedDates(String habitId) {
+    return _database.getCompletedDates(habitId);
   }
 
   Habit? findHabitById(String habitId) {
