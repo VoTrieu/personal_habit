@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../data/sample_habits.dart';
+import '../../controllers/habit_controller.dart';
 import '../../models/habit.dart';
 import '../../models/new_habit_result.dart';
 import '../../theme/app_dimensions.dart';
@@ -19,43 +20,8 @@ class TodayScreen extends StatefulWidget {
 }
 
 class _TodayScreenState extends State<TodayScreen> {
-  List<Habit> habits = [...sampleHabits];
-
-  int get completedCount => habits.where((h) => h.isCompletedToday).length;
-
-  bool get hasHabits => habits.isNotEmpty;
-
-  double get completionProgress {
-    if (habits.isEmpty) return 0;
-    return completedCount / habits.length;
-  }
-
-  Habit? findHabitById(String id) {
-    for (final habit in habits) {
-      if (habit.id == id) {
-        return habit;
-      }
-    }
-    return null;
-  }
-
-  int get bestStreak {
-    if (habits.isEmpty) return 0;
-    var highestStreak = habits
-        .map((h) => h.streak)
-        .reduce((a, b) => a > b ? a : b);
-    return highestStreak;
-  }
-
-  void toggleHabitCompletion(String habitId) {
-    setState(() {
-      habits = habits.map((habit) {
-        if (habit.id == habitId) {
-          return habit.copyWith(isCompletedToday: !habit.isCompletedToday);
-        }
-        return habit;
-      }).toList();
-    });
+  Future<void> toggleHabitCompletion(String habitId) async {
+    await context.read<HabitController>().toggleHabitCompletion(habitId);
   }
 
   Future<void> addHabit() async {
@@ -65,22 +31,19 @@ class _TodayScreenState extends State<TodayScreen> {
 
     if (!mounted || result == null) return;
 
-    setState(() {
-      habits = [
-        ...habits,
-        Habit(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          name: result.name,
-          icon: result.icon,
-          streak: 0,
-          isCompletedToday: false,
-          color: result.color,
-          frequency: result.frequency,
-          reminderEnabled: result.reminderEnabled,
-          reminderTime: result.reminderTime,
-        ),
-      ];
-    });
+    final habit = Habit(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: result.name,
+      icon: result.icon,
+      streak: 0,
+      isCompletedToday: false,
+      color: result.color,
+      frequency: result.frequency,
+      reminderEnabled: result.reminderEnabled,
+      reminderTime: result.reminderTime,
+    );
+
+    await context.read<HabitController>().addHabit(habit);
   }
 
   Future<void> deleteHabit(String habitId) async {
@@ -106,9 +69,7 @@ class _TodayScreenState extends State<TodayScreen> {
       return;
     }
 
-    setState(() {
-      habits = habits.where((h) => h.id != habitId).toList();
-    });
+    await context.read<HabitController>().deleteHabit(habitId);
   }
 
   Future<void> openHabitDetail(Habit habit) async {
@@ -120,11 +81,13 @@ class _TodayScreenState extends State<TodayScreen> {
 
     switch (result.action) {
       case HabitDetailAction.toggleCompletion:
-        toggleHabitCompletion(result.habitId);
+        await toggleHabitCompletion(result.habitId);
         break;
       case HabitDetailAction.edit:
         await editHabit(result.habitId);
-        final updatedHabit = findHabitById(result.habitId);
+        final updatedHabit = context.read<HabitController>().findHabitById(
+          result.habitId,
+        );
         if (updatedHabit != null) {
           await openHabitDetail(updatedHabit);
         }
@@ -133,7 +96,8 @@ class _TodayScreenState extends State<TodayScreen> {
   }
 
   Future<void> editHabit(String habitId) async {
-    final habit = findHabitById(habitId);
+    final controller = context.read<HabitController>();
+    final habit = controller.findHabitById(habitId);
 
     if (habit == null) return;
 
@@ -152,28 +116,28 @@ class _TodayScreenState extends State<TodayScreen> {
 
     if (!mounted || result == null) return;
 
-    setState(() {
-      habits = habits.map((habit) {
-        if (habit.id == habitId) {
-          return habit.copyWith(
-            name: result.name,
-            icon: result.icon,
-            color: result.color,
-            frequency: result.frequency,
-            reminderEnabled: result.reminderEnabled,
-            reminderTime: result.reminderTime,
-          );
-        }
-        return habit;
-      }).toList();
-    });
+    await controller.updateHabit(
+      habit.copyWith(
+        name: result.name,
+        icon: result.icon,
+        color: result.color,
+        frequency: result.frequency,
+        reminderEnabled: result.reminderEnabled,
+        reminderTime: result.reminderTime,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<HabitController>();
+    final habits = controller.habits;
+
     return Scaffold(
       body: SafeArea(
-        child: hasHabits
+        child: controller.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : habits.isNotEmpty
             ? ListView(
                 padding: const EdgeInsets.all(AppSpacing.screen),
                 children: [
@@ -205,10 +169,10 @@ class _TodayScreenState extends State<TodayScreen> {
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   HabitSummary(
-                    bestStreak: bestStreak,
-                    completedCount: completedCount,
+                    bestStreak: controller.bestStreak,
+                    completedCount: controller.completedCount,
                     totalCount: habits.length,
-                    completionProgress: completionProgress,
+                    completionProgress: controller.completionProgress,
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   ...habits.map((habit) {
