@@ -3,9 +3,13 @@ import 'package:provider/provider.dart';
 
 import 'controllers/habit_controller.dart';
 import 'features/app_shell/app_shell.dart';
+import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.instance.initialize();
+
   runApp(const MyApp());
 }
 

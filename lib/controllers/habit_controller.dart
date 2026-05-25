@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/habit_database.dart';
 import '../models/habit.dart';
+import '../services/notification_service.dart';
 import '../utils/time_formatters.dart';
 
 class HabitController extends ChangeNotifier {
@@ -65,12 +66,15 @@ class HabitController extends ChangeNotifier {
 
   Future<void> addHabit(Habit habit) async {
     await _database.insertHabit(habit);
+    await _syncHabitReminder(habit);
+
     _habits = [...habits, habit];
     notifyListeners();
   }
 
   Future<void> updateHabit(Habit updatedHabit) async {
     await _database.updateHabit(updatedHabit);
+    await _syncHabitReminder(updatedHabit);
 
     _habits = _habits.map((habit) {
       if (habit.id == updatedHabit.id) {
@@ -85,6 +89,8 @@ class HabitController extends ChangeNotifier {
 
   Future<void> deleteHabit(String habitId) async {
     await _database.deleteHabit(habitId);
+    await NotificationService.instance.cancelHabitReminder(habitId);
+
     _habits = [...habits.where((h) => h.id != habitId)];
     notifyListeners();
   }
@@ -147,5 +153,18 @@ class HabitController extends ChangeNotifier {
     }
 
     return null;
+  }
+
+  Future<void> _syncHabitReminder(Habit habit) async {
+    if (!habit.reminderEnabled) {
+      await NotificationService.instance.cancelHabitReminder(habit.id);
+      return;
+    }
+
+    await NotificationService.instance.scheduleDailyHabitReminder(
+      habitId: habit.id,
+      habitName: habit.name,
+      time: habit.reminderTime,
+    );
   }
 }

@@ -76,7 +76,9 @@ class _InsightStatCard extends StatelessWidget {
               children: [
                 Text(title, style: Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height: AppSpacing.sm),
-                Text(value, style: Theme.of(context).textTheme.titleLarge),
+                Text(value, style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                )),
                 const SizedBox(height: AppSpacing.xs),
                 Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
               ],

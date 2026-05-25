@@ -32,7 +32,9 @@ class CompletionRate extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   '$percentage%',
-                  style: Theme.of(context).textTheme.displaySmall,
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
