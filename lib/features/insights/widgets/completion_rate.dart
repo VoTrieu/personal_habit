@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../controllers/habit_controller.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_dimensions.dart';
 
@@ -8,10 +10,13 @@ class CompletionRate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<HabitController>();
+    final progress = controller.completionProgress;
+    final percentage = (progress * 100).round();
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.optionBackground,
+        color: AppColors.insightTealBackground,
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Row(
@@ -25,10 +30,13 @@ class CompletionRate extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                Text('72%', style: Theme.of(context).textTheme.displaySmall),
+                Text(
+                  '$percentage%',
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  '+14% vs last week',
+                  '${controller.completedCount} of ${controller.habits.length} habits completed',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w700,
@@ -41,7 +49,7 @@ class CompletionRate extends StatelessWidget {
             width: AppSizes.completionRateChartSize,
             height: AppSizes.completionRateChartSize,
             child: CircularProgressIndicator(
-              value: 0.72,
+              value: progress,
               strokeWidth: AppSizes.completionRateStrokeWidth,
               backgroundColor: AppColors.borderLight,
               color: AppColors.primary,

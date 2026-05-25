@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../data/sample_habits.dart';
+import '../../../controllers/habit_controller.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_dimensions.dart';
 
@@ -9,24 +10,31 @@ class ActiveHabits extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final habits = context.watch<HabitController>().habits;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Active habits', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: AppSpacing.md),
-        ...sampleHabits.map((habit) {
-          return ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: CircleAvatar(
-              backgroundColor: habit.color,
-              foregroundColor: AppColors.white,
-              child: Icon(habit.icon),
-            ),
-            title: Text(habit.name),
-            subtitle: Text('${habit.streak} day streak'),
-            trailing: const Icon(Icons.chevron_right),
-          );
-        }),
+        if (habits.isEmpty)
+          Text(
+            'No active habits yet.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          )
+        else
+          ...habits.map((habit) {
+            return ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: CircleAvatar(
+                backgroundColor: habit.color,
+                foregroundColor: AppColors.white,
+                child: Icon(habit.icon),
+              ),
+              title: Text(habit.name),
+              subtitle: Text('${habit.streak} day streak'),
+              trailing: const Icon(Icons.chevron_right),
+            );
+          }),
       ],
     );
   }

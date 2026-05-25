@@ -14,6 +14,9 @@ class AppColors {
   static const habitBlue = Color(0xFF3F6FE5);
   static const habitPurple = Color(0xFF6B46C1);
   static const habitGreen = Color(0xFF16A34A);
+  static const insightTealBackground = Color(0xFFEAF7F5);
+  static const insightAmberBackground = Color(0xFFFFF3D8);
+  static const insightCoralBackground = Color(0xFFFFE9E4);
 
   static const textMuted = Colors.black54;
   static const border = Colors.black26;
