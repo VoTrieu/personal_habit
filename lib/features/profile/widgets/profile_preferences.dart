@@ -8,14 +8,14 @@ class ProfilePreferences extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SettingsGroup(
+    return SettingsGroup(
       children: [
-        SettingsRow(
+        const SettingsRow(
           icon: Icons.notifications_outlined,
           title: 'Notifications',
           subtitle: 'Manage habit reminders',
         ),
-        SettingsRow(
+        const SettingsRow(
           icon: Icons.palette_outlined,
           title: 'Appearance',
           subtitle: 'App theme and visual style',
@@ -24,8 +24,29 @@ class ProfilePreferences extends StatelessWidget {
           icon: Icons.info_outline,
           title: 'About',
           subtitle: 'Personal Habit app',
+          onTap: () => showAboutDialog(context),
         ),
       ],
+    );
+  }
+
+  void showAboutDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Personal Habit'),
+          content: const Text(
+            'A simple habit tracker for daily progress, streaks, reminders, and weekly insights.\n\nVersion 1.0.0',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -53,15 +74,18 @@ class SettingsRow extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
+    this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onTap,
       leading: Icon(icon, color: AppColors.primary),
       title: Text(title),
       subtitle: Text(subtitle),
