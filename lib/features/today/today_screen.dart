@@ -11,6 +11,7 @@ import '../../widgets/delete_habit_confirmation_dialog.dart';
 import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
 import '../new_habit/new_habit_screen.dart';
+import '../weekly_status/weekly_status_screen.dart';
 import 'widgets/habit_summary.dart';
 import 'widgets/habit_tile.dart';
 import 'widgets/today_header.dart';
@@ -119,6 +120,16 @@ class _TodayScreenState extends State<TodayScreen> {
     );
   }
 
+  Future<void> openWeeklyStatus() async {
+    await Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const WeeklyStatusScreen()));
+
+    if (!mounted) return;
+
+    await context.read<HabitController>().loadHabits();
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<HabitController>();
@@ -132,7 +143,7 @@ class _TodayScreenState extends State<TodayScreen> {
             ? ListView(
                 padding: const EdgeInsets.all(AppSpacing.screen),
                 children: [
-                  const TodayHeader(),
+                  TodayHeader(onWeeklyStatusPressed: openWeeklyStatus),
                   const SizedBox(height: AppSpacing.headerToWeek),
                   FutureBuilder<List<CompletionDay>>(
                     future: completionWeekDays(controller),

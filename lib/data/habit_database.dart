@@ -80,6 +80,31 @@ class HabitDatabase {
     return rows.map((row) => row['statusDate'] as String).toList();
   }
 
+  Future<Map<String, Map<String, bool>>> getDailyStatusesForDates(
+    List<String> dates,
+  ) async {
+    if (dates.isEmpty) return {};
+
+    final db = await database;
+    final rows = await db.query(
+      _dailyStatusesTable,
+      where: 'statusDate IN (${List.filled(dates.length, '?').join(', ')})',
+      whereArgs: dates,
+    );
+
+    final statuses = <String, Map<String, bool>>{};
+    for (final row in rows) {
+      final habitId = row['habitId'] as String;
+      final date = row['statusDate'] as String;
+      final isCompleted = (row['isCompleted'] as int) == 1;
+
+      statuses.putIfAbsent(habitId, () => {});
+      statuses[habitId]![date] = isCompleted;
+    }
+
+    return statuses;
+  }
+
   Future<void> ensureDailyStatuses(List<Habit> habits, String today) async {
     if (habits.isEmpty) return;
 
@@ -145,6 +170,27 @@ class HabitDatabase {
     );
 
     return rows.isNotEmpty;
+  }
+
+  Future<int> getCurrentStreak(String habitId, String today) async {
+    final db = await database;
+    final rows = await db.query(
+      _dailyStatusesTable,
+      columns: ['statusDate', 'isCompleted'],
+      where: 'habitId = ? AND statusDate <= ?',
+      whereArgs: [habitId, today],
+      orderBy: 'statusDate DESC',
+    );
+
+    var streak = 0;
+    for (final row in rows) {
+      final isCompleted = (row['isCompleted'] as int) == 1;
+      if (!isCompleted) break;
+
+      streak++;
+    }
+
+    return streak;
   }
 
   Future<void> _createTables(Database db) async {

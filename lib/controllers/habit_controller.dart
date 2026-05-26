@@ -106,24 +106,59 @@ class HabitController extends ChangeNotifier {
     final date = todayKey();
     final isNowCompleted = !habit.isCompletedToday;
 
-    await _database.saveDailyStatus(
+    await setHabitCompletionForDate(
       habitId: habitId,
       date: date,
       isCompleted: isNowCompleted,
     );
-
-    final updatedHabit = habit.copyWith(
-      isCompletedToday: isNowCompleted,
-      streak: isNowCompleted
-          ? habit.streak + 1
-          : (habit.streak > 0 ? habit.streak - 1 : 0),
-    );
-
-    await updateHabit(updatedHabit);
   }
 
   Future<List<String>> getCompletedDates(String habitId) {
     return _database.getCompletedDates(habitId);
+  }
+
+  Future<Map<String, Map<String, bool>>> getDailyStatusesForDates(
+    List<String> dates,
+  ) {
+    return _database.getDailyStatusesForDates(dates);
+  }
+
+  Future<void> setHabitCompletionForDate({
+    required String habitId,
+    required String date,
+    required bool isCompleted,
+  }) async {
+    final habit = findHabitById(habitId);
+    if (habit == null) return;
+
+    await _database.saveDailyStatus(
+      habitId: habitId,
+      date: date,
+      isCompleted: isCompleted,
+    );
+
+    final today = todayKey();
+    final streak = await _database.getCurrentStreak(habitId, today);
+    final isCompletedToday = await _database.isHabitCompletedOnDate(
+      habitId,
+      today,
+    );
+
+    final updatedHabit = habit.copyWith(
+      streak: streak,
+      isCompletedToday: isCompletedToday,
+    );
+
+    await _database.updateHabit(updatedHabit);
+    _habits = _habits.map((habit) {
+      if (habit.id == updatedHabit.id) {
+        return updatedHabit;
+      }
+
+      return habit;
+    }).toList();
+
+    notifyListeners();
   }
 
   Future<List<double>> weeklyCompletionRates() async {

@@ -4,7 +4,9 @@ import '../../../theme/app_colors.dart';
 import '../../../theme/app_dimensions.dart';
 
 class TodayHeader extends StatelessWidget {
-  const TodayHeader({super.key});
+  const TodayHeader({super.key, required this.onWeeklyStatusPressed});
+
+  final VoidCallback onWeeklyStatusPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +35,8 @@ class TodayHeader extends StatelessWidget {
           ),
         ),
         IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.notifications_outlined),
+          onPressed: onWeeklyStatusPressed,
+          icon: const Icon(Icons.calendar_month_outlined),
         ),
       ],
     );
