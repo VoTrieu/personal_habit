@@ -1,24 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../controllers/habit_controller.dart';
+import '../../../models/habit.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_dimensions.dart';
+import '../../../utils/time_formatters.dart';
+import '../../../widgets/habit_colors.dart';
 
 class ProfilePreferences extends StatelessWidget {
   const ProfilePreferences({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final reminders = context
+        .watch<HabitController>()
+        .habits
+        .where((habit) => habit.reminderEnabled)
+        .toList();
+
     return SettingsGroup(
       children: [
-        const SettingsRow(
+        SettingsRow(
           icon: Icons.notifications_outlined,
           title: 'Notifications',
           subtitle: 'Manage habit reminders',
+          onTap: () => showRemindersSheet(context, reminders),
         ),
-        const SettingsRow(
+        SettingsRow(
           icon: Icons.palette_outlined,
           title: 'Appearance',
           subtitle: 'App theme and visual style',
+          onTap: () => showAppearanceSheet(context),
         ),
         SettingsRow(
           icon: Icons.info_outline,
@@ -27,6 +40,97 @@ class ProfilePreferences extends StatelessWidget {
           onTap: () => showAboutDialog(context),
         ),
       ],
+    );
+  }
+
+  void showRemindersSheet(BuildContext context, List<Habit> reminders) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.screen,
+              0,
+              AppSpacing.screen,
+              AppSpacing.screen,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Notifications',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                if (reminders.isEmpty)
+                  Text(
+                    'No habit reminders are enabled.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  )
+                else
+                  ...reminders.map((habit) {
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        backgroundColor: habit.color,
+                        foregroundColor: AppColors.white,
+                        child: Icon(habit.icon),
+                      ),
+                      title: Text(habit.name),
+                      subtitle: Text(formatTimeOfDay(habit.reminderTime)),
+                      trailing: const Icon(Icons.notifications_active_outlined),
+                    );
+                  }),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void showAppearanceSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.screen,
+              0,
+              AppSpacing.screen,
+              AppSpacing.screen,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Appearance',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(
+                    Icons.light_mode_outlined,
+                    color: AppColors.primary,
+                  ),
+                  title: const Text('Light'),
+                  subtitle: const Text('Current app theme'),
+                  trailing: const Icon(Icons.check, color: AppColors.primary),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                const HabitColors(selectedColor: null, onSelected: null),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

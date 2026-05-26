@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/new_habit_result.dart';
 import '../../theme/app_dimensions.dart';
 import '../../utils/time_formatters.dart';
-import 'widgets/habit_colors.dart';
+import '../../widgets/habit_colors.dart';
 import 'widgets/habit_frequencies.dart';
 import 'widgets/habit_icons.dart';
 import 'widgets/habit_reminder_time.dart';
