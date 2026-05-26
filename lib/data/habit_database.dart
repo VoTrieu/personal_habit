@@ -5,9 +5,9 @@ import '../models/habit.dart';
 
 class HabitDatabase {
   static const _databaseName = 'personal_habit.db';
-  static const _databaseVersion = 3;
+  static const _databaseVersion = 1;
   static const _habitsTable = 'habits';
-  static const _completionsTable = 'habit_completions';
+  static const _dailyStatusesTable = 'habit_daily_statuses';
 
   Database? _database;
 
@@ -27,7 +27,7 @@ class HabitDatabase {
         return _createTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        await db.execute('DROP TABLE IF EXISTS $_completionsTable');
+        await db.execute('DROP TABLE IF EXISTS $_dailyStatusesTable');
         await db.execute('DROP TABLE IF EXISTS $_habitsTable');
         await _createTables(db);
       },
@@ -61,7 +61,7 @@ class HabitDatabase {
   Future<void> deleteHabit(String habitId) async {
     final db = await database;
     await db.delete(
-      _completionsTable,
+      _dailyStatusesTable,
       where: 'habitId = ?',
       whereArgs: [habitId],
     );
@@ -71,42 +71,76 @@ class HabitDatabase {
   Future<List<String>> getCompletedDates(String habitId) async {
     final db = await database;
     final rows = await db.query(
-      _completionsTable,
-      columns: ['completedDate'],
-      where: 'habitId = ?',
-      whereArgs: [habitId],
-      orderBy: 'completedDate DESC',
+      _dailyStatusesTable,
+      columns: ['statusDate'],
+      where: 'habitId = ? AND isCompleted = ?',
+      whereArgs: [habitId, 1],
+      orderBy: 'statusDate DESC',
     );
-    return rows.map((row) => row['completedDate'] as String).toList();
+    return rows.map((row) => row['statusDate'] as String).toList();
   }
 
-  Future<void> insertCompletion(String habitId, String date) async {
+  Future<void> ensureDailyStatuses(List<Habit> habits, String today) async {
+    if (habits.isEmpty) return;
+
+    final db = await database;
+    final latestRows = await db.query(
+      _dailyStatusesTable,
+      columns: ['statusDate'],
+      orderBy: 'statusDate DESC',
+      limit: 1,
+    );
+
+    final datesToEnsure = <String>{today};
+    if (latestRows.isNotEmpty) {
+      final latestDate = _parseDateKey(
+        latestRows.first['statusDate'] as String,
+      );
+      final todayDate = _parseDateKey(today);
+
+      var date = latestDate.add(const Duration(days: 1));
+      while (!date.isAfter(todayDate)) {
+        datesToEnsure.add(_dateKey(date));
+        date = date.add(const Duration(days: 1));
+      }
+    }
+
+    final batch = db.batch();
+    for (final date in datesToEnsure) {
+      for (final habit in habits) {
+        batch.insert(_dailyStatusesTable, {
+          'id': '${habit.id}_$date',
+          'habitId': habit.id,
+          'statusDate': date,
+          'isCompleted': 0,
+        }, conflictAlgorithm: ConflictAlgorithm.ignore);
+      }
+    }
+    await batch.commit(noResult: true);
+  }
+
+  Future<void> saveDailyStatus({
+    required String habitId,
+    required String date,
+    required bool isCompleted,
+  }) async {
     final db = await database;
 
-    await db.insert(_completionsTable, {
+    await db.insert(_dailyStatusesTable, {
       'id': '${habitId}_$date',
       'habitId': habitId,
-      'completedDate': date,
-    }, conflictAlgorithm: ConflictAlgorithm.ignore);
-  }
-
-  Future<void> deleteCompletion(String habitId, String date) async {
-    final db = await database;
-
-    await db.delete(
-      _completionsTable,
-      where: 'habitId = ? AND completedDate = ?',
-      whereArgs: [habitId, date],
-    );
+      'statusDate': date,
+      'isCompleted': isCompleted ? 1 : 0,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<bool> isHabitCompletedOnDate(String habitId, String date) async {
     final db = await database;
 
     final rows = await db.query(
-      _completionsTable,
-      where: 'habitId = ? AND completedDate = ?',
-      whereArgs: [habitId, date],
+      _dailyStatusesTable,
+      where: 'habitId = ? AND statusDate = ? AND isCompleted = ?',
+      whereArgs: [habitId, date, 1],
       limit: 1,
     );
 
@@ -128,13 +162,34 @@ class HabitDatabase {
     )
   ''');
 
+    await _createDailyStatusesTable(db);
+  }
+
+  Future<void> _createDailyStatusesTable(Database db) async {
     await db.execute('''
-    CREATE TABLE $_completionsTable (
+    CREATE TABLE IF NOT EXISTS $_dailyStatusesTable (
       id TEXT PRIMARY KEY,
       habitId TEXT NOT NULL,
-      completedDate TEXT NOT NULL,
-      UNIQUE(habitId, completedDate)
+      statusDate TEXT NOT NULL,
+      isCompleted INTEGER NOT NULL,
+      UNIQUE(habitId, statusDate)
     )
   ''');
+  }
+
+  DateTime _parseDateKey(String dateKey) {
+    final parts = dateKey.split('-');
+    return DateTime(
+      int.parse(parts[0]),
+      int.parse(parts[1]),
+      int.parse(parts[2]),
+    );
+  }
+
+  String _dateKey(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+
+    return '${date.year}-$month-$day';
   }
 }

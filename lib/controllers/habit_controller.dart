@@ -46,6 +46,7 @@ class HabitController extends ChangeNotifier {
     try {
       final loadedHabits = await _database.getHabits();
       final today = todayKey();
+      await _database.ensureDailyStatuses(loadedHabits, today);
 
       _habits = [];
       for (final habit in loadedHabits) {
@@ -66,6 +67,11 @@ class HabitController extends ChangeNotifier {
 
   Future<void> addHabit(Habit habit) async {
     await _database.insertHabit(habit);
+    await _database.saveDailyStatus(
+      habitId: habit.id,
+      date: todayKey(),
+      isCompleted: habit.isCompletedToday,
+    );
     await _syncHabitReminder(habit);
 
     _habits = [...habits, habit];
@@ -100,11 +106,11 @@ class HabitController extends ChangeNotifier {
     final date = todayKey();
     final isNowCompleted = !habit.isCompletedToday;
 
-    if (isNowCompleted) {
-      await _database.insertCompletion(habitId, date);
-    } else {
-      await _database.deleteCompletion(habitId, date);
-    }
+    await _database.saveDailyStatus(
+      habitId: habitId,
+      date: date,
+      isCompleted: isNowCompleted,
+    );
 
     final updatedHabit = habit.copyWith(
       isCompletedToday: isNowCompleted,
