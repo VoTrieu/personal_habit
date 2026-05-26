@@ -8,6 +8,8 @@ class TodayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final today = DateTime.now();
+
     return Row(
       children: [
         Expanded(
@@ -22,7 +24,7 @@ class TodayHeader extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'Fri, May 23',
+                '${weekdayLabel(today)}, ${monthLabel(today)} ${today.day}',
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(color: AppColors.textMuted),
@@ -36,5 +38,28 @@ class TodayHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String weekdayLabel(DateTime date) {
+    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return labels[date.weekday - 1];
+  }
+
+  String monthLabel(DateTime date) {
+    const labels = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return labels[date.month - 1];
   }
 }

@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../controllers/habit_controller.dart';
 import '../habits/habits_screen.dart';
 import '../insights/insights_screen.dart';
 import '../profile/profile_screen.dart';
@@ -12,8 +16,10 @@ class AppShell extends StatefulWidget {
   State<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   int selectedIndex = 0;
+  String? loadedDateKey;
+  Timer? dailyRefreshTimer;
 
   final pages = const [
     TodayScreen(),
@@ -21,6 +27,33 @@ class _AppShellState extends State<AppShell> {
     InsightsScreen(),
     ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loadedDateKey ??= context.read<HabitController>().todayKey();
+    scheduleDailyRefresh();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      refreshIfDateChanged();
+    }
+  }
+
+  @override
+  void dispose() {
+    dailyRefreshTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,5 +90,31 @@ class _AppShellState extends State<AppShell> {
         ],
       ),
     );
+  }
+
+  void scheduleDailyRefresh() {
+    dailyRefreshTimer?.cancel();
+
+    final now = DateTime.now();
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    dailyRefreshTimer = Timer(tomorrow.difference(now), refreshForNewDay);
+  }
+
+  Future<void> refreshIfDateChanged() async {
+    final todayKey = context.read<HabitController>().todayKey();
+    if (loadedDateKey == todayKey) return;
+
+    await refreshForNewDay();
+  }
+
+  Future<void> refreshForNewDay() async {
+    if (!mounted) return;
+
+    loadedDateKey = context.read<HabitController>().todayKey();
+    await context.read<HabitController>().loadHabits();
+
+    if (mounted) {
+      scheduleDailyRefresh();
+    }
   }
 }
