@@ -2,12 +2,14 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/habit.dart';
+import '../models/user_profile.dart';
 
 class HabitDatabase {
   static const _databaseName = 'personal_habit.db';
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
   static const _habitsTable = 'habits';
   static const _dailyStatusesTable = 'habit_daily_statuses';
+  static const _profileTable = 'user_profile';
 
   Database? _database;
 
@@ -27,9 +29,9 @@ class HabitDatabase {
         return _createTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        await db.execute('DROP TABLE IF EXISTS $_dailyStatusesTable');
-        await db.execute('DROP TABLE IF EXISTS $_habitsTable');
-        await _createTables(db);
+        if (oldVersion < 2) {
+          await _createProfileTable(db);
+        }
       },
     );
 
@@ -41,6 +43,33 @@ class HabitDatabase {
     final db = await database;
     final habits = await db.query(_habitsTable);
     return habits.map((habit) => Habit.fromMap(habit)).toList();
+  }
+
+  Future<UserProfile> getUserProfile() async {
+    final db = await database;
+    final rows = await db.query(
+      _profileTable,
+      where: 'id = ?',
+      whereArgs: [UserProfile.defaultId],
+      limit: 1,
+    );
+
+    if (rows.isEmpty) {
+      const profile = UserProfile.empty();
+      await saveUserProfile(profile);
+      return profile;
+    }
+
+    return UserProfile.fromMap(rows.first);
+  }
+
+  Future<void> saveUserProfile(UserProfile profile) async {
+    final db = await database;
+    await db.insert(
+      _profileTable,
+      profile.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<void> insertHabit(Habit habit) async {
@@ -197,6 +226,7 @@ class HabitDatabase {
   ''');
 
     await _createDailyStatusesTable(db);
+    await _createProfileTable(db);
   }
 
   Future<void> _createDailyStatusesTable(Database db) async {
@@ -207,6 +237,18 @@ class HabitDatabase {
       statusDate TEXT NOT NULL,
       isCompleted INTEGER NOT NULL,
       UNIQUE(habitId, statusDate)
+    )
+  ''');
+  }
+
+  Future<void> _createProfileTable(Database db) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS $_profileTable (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      bio TEXT NOT NULL,
+      avatarPath TEXT
     )
   ''');
   }

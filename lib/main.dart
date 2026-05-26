@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'controllers/habit_controller.dart';
+import 'controllers/profile_controller.dart';
 import 'features/app_shell/app_shell.dart';
 import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
@@ -18,8 +19,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => HabitController()..loadHabits(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => HabitController()..loadHabits()),
+        ChangeNotifierProvider(
+          create: (_) => ProfileController()..loadProfile(),
+        ),
+      ],
       child: MaterialApp(
         title: 'Personal Habit Tracker',
         debugShowCheckedModeBanner: false,

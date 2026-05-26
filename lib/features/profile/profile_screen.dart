@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/habit_controller.dart';
+import '../../controllers/profile_controller.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_dimensions.dart';
 import '../../widgets/app_stat_card.dart';
+import 'edit_profile_screen.dart';
 import 'widgets/profile_header.dart';
 import 'widgets/profile_preferences.dart';
 import 'widgets/profile_progress_card.dart';
@@ -15,7 +17,9 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<HabitController>();
+    final profileController = context.watch<ProfileController>();
     final habits = controller.habits;
+    final profile = profileController.profile;
     final totalCompletions = habits.fold<int>(
       0,
       (total, habit) => total + habit.streak,
@@ -31,8 +35,11 @@ class ProfileScreen extends StatelessWidget {
             Text('Profile', style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: AppSpacing.xl),
             ProfileHeader(
+              profile: profile,
               habitCount: habits.length,
               completionPercent: completionPercent,
+              onEditPressed: () => openEditProfile(context),
+              onAvatarPressed: () => pickAvatar(context),
             ),
             const SizedBox(height: AppSpacing.xl),
             ProfileProgressCard(
@@ -83,5 +90,19 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> openEditProfile(BuildContext context) async {
+    final profile = context.read<ProfileController>().profile;
+
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => EditProfileScreen(profile: profile),
+      ),
+    );
+  }
+
+  Future<void> pickAvatar(BuildContext context) async {
+    await context.read<ProfileController>().pickAvatar();
   }
 }
