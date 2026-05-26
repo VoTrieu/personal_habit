@@ -7,12 +7,14 @@ class HabitInfoCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
+  final Color backgroundColor;
 
   const HabitInfoCard({
     super.key, 
     required this.icon,
     required this.label,
     required this.value,
+    this.backgroundColor = AppColors.optionBackground,
   });
 
   @override
@@ -21,7 +23,7 @@ class HabitInfoCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.optionBackground,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Row(

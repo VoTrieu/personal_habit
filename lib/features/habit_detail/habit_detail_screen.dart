@@ -112,6 +112,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                             icon: Icons.repeat,
                             label: 'Frequency',
                             value: habit.frequency,
+                            backgroundColor: AppColors.insightAmberBackground,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.md),
@@ -122,6 +123,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                             value: habit.reminderEnabled
                                 ? formatTimeOfDay(habit.reminderTime)
                                 : 'Off',
+                            backgroundColor: AppColors.insightCoralBackground,
                           ),
                         ),
                       ],
