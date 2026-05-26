@@ -6,6 +6,7 @@ import '../../models/habit.dart';
 import '../../models/new_habit_result.dart';
 import '../../theme/app_dimensions.dart';
 import '../../widgets/completion_week_strip.dart';
+import '../../widgets/delete_habit_confirmation_dialog.dart';
 import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
 import '../new_habit/new_habit_screen.dart';
@@ -47,23 +48,7 @@ class _TodayScreenState extends State<TodayScreen> {
   }
 
   Future<void> deleteHabit(String habitId) async {
-    final shouldDelete = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Habit'),
-        content: const Text('Are you sure you want to delete this habit?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
+    final shouldDelete = await showDeleteHabitConfirmationDialog(context);
 
     if (!mounted || shouldDelete != true) {
       return;
@@ -93,6 +78,9 @@ class _TodayScreenState extends State<TodayScreen> {
         if (updatedHabit != null) {
           await openHabitDetail(updatedHabit);
         }
+        break;
+      case HabitDetailAction.delete:
+        await context.read<HabitController>().deleteHabit(result.habitId);
         break;
     }
   }

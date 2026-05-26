@@ -7,6 +7,7 @@ import '../../models/habit.dart';
 import '../../theme/app_dimensions.dart';
 import '../../utils/time_formatters.dart';
 import '../../widgets/completion_week_strip.dart';
+import '../../widgets/delete_habit_confirmation_dialog.dart';
 import 'habit_detail_result.dart';
 
 class HabitDetailScreen extends StatefulWidget {
@@ -135,6 +136,12 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
               icon: const Icon(Icons.edit),
               label: const Text('Edit Habit'),
             ),
+            const SizedBox(height: AppSpacing.md),
+            OutlinedButton.icon(
+              onPressed: () => deleteHabit(context, habit.id),
+              icon: const Icon(Icons.delete_outline),
+              label: const Text('Delete Habit'),
+            ),
           ],
         ),
       ),
@@ -156,6 +163,19 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
         isCompleted: completedDateSet.contains(dateKey),
       );
     });
+  }
+
+  Future<void> deleteHabit(BuildContext context, String habitId) async {
+    final shouldDelete = await showDeleteHabitConfirmationDialog(context);
+
+    if (!context.mounted || !shouldDelete) {
+      return;
+    }
+
+    Navigator.pop(
+      context,
+      HabitDetailResult(habitId: habitId, action: HabitDetailAction.delete),
+    );
   }
 }
 

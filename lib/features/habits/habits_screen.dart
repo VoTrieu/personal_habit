@@ -6,6 +6,7 @@ import '../../models/habit.dart';
 import '../../models/new_habit_result.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_dimensions.dart';
+import '../../widgets/delete_habit_confirmation_dialog.dart';
 import '../habit_detail/habit_detail_result.dart';
 import '../habit_detail/habit_detail_screen.dart';
 import '../new_habit/new_habit_screen.dart';
@@ -29,7 +30,20 @@ class HabitsScreen extends StatelessWidget {
       case HabitDetailAction.edit:
         await editHabit(context, result.habitId);
         break;
+      case HabitDetailAction.delete:
+        await context.read<HabitController>().deleteHabit(result.habitId);
+        break;
     }
+  }
+
+  Future<void> deleteHabit(BuildContext context, String habitId) async {
+    final shouldDelete = await showDeleteHabitConfirmationDialog(context);
+
+    if (!context.mounted || shouldDelete != true) {
+      return;
+    }
+
+    await context.read<HabitController>().deleteHabit(habitId);
   }
 
   Future<void> editHabit(BuildContext context, String habitId) async {

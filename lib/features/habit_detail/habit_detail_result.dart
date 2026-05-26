@@ -1,4 +1,4 @@
-enum HabitDetailAction { toggleCompletion, edit }
+enum HabitDetailAction { toggleCompletion, edit, delete }
 
 class HabitDetailResult {
   final String habitId;
