@@ -18,8 +18,9 @@ class CompletionWeekStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: days.map((day) => _CompletionDayItem(day: day)).toList(),
+      children: days.map((day) {
+        return Expanded(child: _CompletionDayItem(day: day));
+      }).toList(),
     );
 
     final child = Column(
@@ -73,25 +74,64 @@ class _CompletionDayItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isFilled = day.isCompleted || day.isToday;
+    final circleSize = AppSizes.weekDayRadius * 2;
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(day.label, style: Theme.of(context).textTheme.bodySmall),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(day.label, style: Theme.of(context).textTheme.bodySmall),
+        ),
         const SizedBox(height: AppSpacing.xxs),
-        Text(day.date, style: Theme.of(context).textTheme.bodySmall),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(day.date, style: Theme.of(context).textTheme.bodySmall),
+        ),
         const SizedBox(height: AppSpacing.sm),
-        CircleAvatar(
-          radius: AppSizes.weekDayRadius,
-          backgroundColor: isFilled ? AppColors.primary : AppColors.transparent,
-          foregroundColor: isFilled ? AppColors.white : AppColors.iconSubtle,
-          child: day.isCompleted
-              ? const Icon(Icons.check, size: AppSizes.weekCheckIconSize)
-              : Text(
-                  day.date,
-                  style: const TextStyle(fontSize: AppSizes.weekDateFontSize),
-                ),
+        Container(
+          width: circleSize,
+          height: circleSize,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isFilled ? AppColors.primary : AppColors.transparent,
+            border: Border.all(
+              color: isFilled ? AppColors.primary : AppColors.borderLight,
+            ),
+          ),
+          child: Center(child: _CompletionDayCircleContent(day: day)),
         ),
       ],
     );
+  }
+}
+
+class _CompletionDayCircleContent extends StatelessWidget {
+  const _CompletionDayCircleContent({required this.day});
+
+  final CompletionDay day;
+
+  @override
+  Widget build(BuildContext context) {
+    if (day.isToday) {
+      return Text(
+        day.date,
+        style: const TextStyle(
+          color: AppColors.white,
+          fontSize: AppSizes.weekDateFontSize,
+          fontWeight: FontWeight.w600,
+        ),
+      );
+    }
+
+    if (day.isCompleted) {
+      return const Icon(
+        Icons.check,
+        color: AppColors.white,
+        size: AppSizes.weekCheckIconSize,
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }
