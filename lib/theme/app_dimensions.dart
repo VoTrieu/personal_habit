@@ -43,5 +43,8 @@ class AppSizes {
   static const completionRateChartSize = 72.0;
   static const completionRateStrokeWidth = 8.0;
   static const weeklyChartHeight = 180.0;
+  static const weeklyChartAxisWidth = 34.0;
   static const weeklyChartBarWidth = 18.0;
+  static const weeklyChartWeekdayLabelHeight = 16.0;
+  static const weeklyChartGridLineHeight = 1.0;
 }
