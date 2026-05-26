@@ -5,6 +5,7 @@ import '../../controllers/habit_controller.dart';
 import '../../models/habit.dart';
 import '../../models/new_habit_result.dart';
 import '../../theme/app_dimensions.dart';
+import '../../utils/time_formatters.dart';
 import '../../widgets/completion_week_strip.dart';
 import '../../widgets/delete_habit_confirmation_dialog.dart';
 import '../habit_detail/habit_detail_result.dart';
@@ -133,29 +134,14 @@ class _TodayScreenState extends State<TodayScreen> {
                 children: [
                   const TodayHeader(),
                   const SizedBox(height: AppSpacing.headerToWeek),
-                  const CompletionWeekStrip(
-                    showBorder: true,
-                    days: [
-                      CompletionDay(
-                        label: 'Mon',
-                        date: '18',
-                        isCompleted: true,
-                      ),
-                      CompletionDay(
-                        label: 'Tue',
-                        date: '19',
-                        isCompleted: true,
-                      ),
-                      CompletionDay(
-                        label: 'Wed',
-                        date: '20',
-                        isCompleted: false,
-                      ),
-                      CompletionDay(label: 'Thu', date: '21'),
-                      CompletionDay(label: 'Fri', date: '22', isToday: true),
-                      CompletionDay(label: 'Sat', date: '23'),
-                      CompletionDay(label: 'Sun', date: '24'),
-                    ],
+                  FutureBuilder<List<CompletionDay>>(
+                    future: completionWeekDays(controller),
+                    builder: (context, snapshot) {
+                      return CompletionWeekStrip(
+                        showBorder: true,
+                        days: snapshot.data ?? emptyCompletionWeekDays(),
+                      );
+                    },
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   HabitSummary(
@@ -188,5 +174,46 @@ class _TodayScreenState extends State<TodayScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
+  }
+
+  Future<List<CompletionDay>> completionWeekDays(
+    HabitController controller,
+  ) async {
+    final today = DateTime.now();
+    final completedDateSets = <String, Set<String>>{};
+
+    for (final habit in controller.habits) {
+      final completedDates = await controller.getCompletedDates(habit.id);
+      completedDateSets[habit.id] = completedDates.toSet();
+    }
+
+    return List.generate(7, (index) {
+      final date = today.subtract(Duration(days: 6 - index));
+      final dateKey = getDateKey(date);
+      final isCompleted = controller.habits.every((habit) {
+        return completedDateSets[habit.id]?.contains(dateKey) ?? false;
+      });
+
+      return CompletionDay(
+        label: getWeekdayLabel(date),
+        date: date.day.toString(),
+        isToday: isSameDate(date, today),
+        isCompleted: isCompleted,
+      );
+    });
+  }
+
+  List<CompletionDay> emptyCompletionWeekDays() {
+    final today = DateTime.now();
+
+    return List.generate(7, (index) {
+      final date = today.subtract(Duration(days: 6 - index));
+
+      return CompletionDay(
+        label: getWeekdayLabel(date),
+        date: date.day.toString(),
+        isToday: isSameDate(date, today),
+      );
+    });
   }
 }
