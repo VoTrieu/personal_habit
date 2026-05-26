@@ -6,9 +6,12 @@ import '../../theme/app_colors.dart';
 import '../../models/habit.dart';
 import '../../theme/app_dimensions.dart';
 import '../../utils/time_formatters.dart';
+import '../../widgets/action_button.dart';
 import '../../widgets/completion_week_strip.dart';
 import '../../widgets/delete_habit_confirmation_dialog.dart';
 import 'habit_detail_result.dart';
+import 'widgets/habit_detail_stat.dart';
+import 'widgets/habit_info_card.dart';
 
 class HabitDetailScreen extends StatefulWidget {
   const HabitDetailScreen({super.key, required this.habit});
@@ -40,107 +43,158 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(habit.name)),
-      body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.screen),
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: CircleAvatar(
-                radius: AppSizes.detailIconSize / 2,
-                backgroundColor: habit.color,
-                foregroundColor: AppColors.white,
-                child: Icon(habit.icon, size: AppSizes.detailIconSize),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            Row(
-              children: [
-                Expanded(
-                  child: _DetailStat(
-                    value: '${habit.streak}',
-                    label: 'Current Streak',
-                  ),
-                ),
-                Expanded(
-                  child: _DetailStat(
-                    value: '$totalCompletions',
-                    label: 'Total completions',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xxl),
-            FutureBuilder<List<String>>(
-              future: completedDatesFuture,
-              builder: (context, snapshot) {
-                final completedDates = snapshot.data ?? [];
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.screen),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: AppSpacing.detailTop),
+                    Center(
+                      child: Container(
+                        width: AppSizes.detailIconBackgroundSize,
+                        height: AppSizes.detailIconBackgroundSize,
+                        decoration: BoxDecoration(
+                          color: habit.color,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: habit.color.withValues(alpha: 0.28),
+                              blurRadius: AppSpacing.xl,
+                              offset: const Offset(0, AppSpacing.sm),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          habit.icon,
+                          color: AppColors.white,
+                          size: AppSizes.detailIconSize,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: HabitDetailStat(
+                            value: '${habit.streak}',
+                            label: 'Current Streak',
+                          ),
+                        ),
+                        Expanded(
+                          child: HabitDetailStat(
+                            value: '$totalCompletions',
+                            label: 'Total completions',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
+                    FutureBuilder<List<String>>(
+                      future: completedDatesFuture,
+                      builder: (context, snapshot) {
+                        final completedDates = snapshot.data ?? [];
 
-                return CompletionWeekStrip(
-                  title: 'Last 7 days',
-                  days: _lastSevenDays(completedDates),
-                );
-              },
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            _HabitInfoRow(
-              icon: Icons.repeat,
-              label: 'Frequency',
-              value: habit.frequency,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            _HabitInfoRow(
-              icon: Icons.notifications_outlined,
-              label: 'Reminder',
-              value: habit.reminderEnabled
-                  ? formatTimeOfDay(habit.reminderTime)
-                  : 'Off',
-            ),
-            const SizedBox(height: AppSpacing.md),
-            _HabitInfoRow(
-              icon: habit.isCompletedToday
-                  ? Icons.check_circle_outline
-                  : Icons.radio_button_unchecked,
-              label: 'Status',
-              value: habit.isCompletedToday ? 'Completed' : 'Not Completed',
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            FilledButton.icon(
-              onPressed: () => Navigator.pop(
-                context,
-                HabitDetailResult(
-                  habitId: habit.id,
-                  action: HabitDetailAction.toggleCompletion,
+                        return CompletionWeekStrip(
+                          title: 'Last 7 days',
+                          days: _lastSevenDays(completedDates),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: HabitInfoCard(
+                            icon: Icons.repeat,
+                            label: 'Frequency',
+                            value: habit.frequency,
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: HabitInfoCard(
+                            icon: Icons.notifications_outlined,
+                            label: 'Reminder',
+                            value: habit.reminderEnabled
+                                ? formatTimeOfDay(habit.reminderTime)
+                                : 'Off',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    HabitInfoCard(
+                      icon: habit.isCompletedToday
+                          ? Icons.check_circle_outline
+                          : Icons.radio_button_unchecked,
+                      label: 'Status',
+                      value: habit.isCompletedToday
+                          ? 'Completed'
+                          : 'Not Completed',
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                  ],
                 ),
               ),
-              icon: Icon(
-                habit.isCompletedToday
-                    ? Icons.check_circle
-                    : Icons.check_circle_outline,
-              ),
-              label: Text(
-                habit.isCompletedToday
-                    ? 'Mark as Incomplete'
-                    : 'Mark as Completed',
-              ),
             ),
-            const SizedBox(height: AppSpacing.md),
-            OutlinedButton.icon(
-              onPressed: () => Navigator.pop(
-                context,
-                HabitDetailResult(
-                  habitId: habit.id,
-                  action: HabitDetailAction.edit,
-                ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.screen,
+                AppSpacing.md,
+                AppSpacing.screen,
+                AppSpacing.screen,
               ),
-              icon: const Icon(Icons.edit),
-              label: const Text('Edit Habit'),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            OutlinedButton.icon(
-              onPressed: () => deleteHabit(context, habit.id),
-              icon: const Icon(Icons.delete_outline),
-              label: const Text('Delete Habit'),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ActionButton(
+                      icon: habit.isCompletedToday
+                          ? Icons.check_circle
+                          : Icons.check_circle_outline,
+                      label: habit.isCompletedToday ? 'Undo' : 'Complete',
+                      backgroundColor: habit.color,
+                      foregroundColor: AppColors.white,
+                      onPressed: () => Navigator.pop(
+                        context,
+                        HabitDetailResult(
+                          habitId: habit.id,
+                          action: HabitDetailAction.toggleCompletion,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: ActionButton(
+                      icon: Icons.edit,
+                      label: 'Edit',
+                      backgroundColor: AppColors.insightTealBackground,
+                      foregroundColor: AppColors.primary,
+                      onPressed: () => Navigator.pop(
+                        context,
+                        HabitDetailResult(
+                          habitId: habit.id,
+                          action: HabitDetailAction.edit,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: ActionButton(
+                      icon: Icons.delete_outline,
+                      label: 'Delete',
+                      backgroundColor: AppColors.dangerBackground,
+                      foregroundColor: AppColors.danger,
+                      onPressed: () => deleteHabit(context, habit.id),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -179,65 +233,8 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
   }
 }
 
-class _DetailStat extends StatelessWidget {
-  const _DetailStat({required this.value, required this.label});
 
-  final String value;
-  final String label;
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          label,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: AppColors.textMuted),
-        ),
-      ],
-    );
-  }
-}
 
-class _HabitInfoRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
 
-  const _HabitInfoRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CircleAvatar(
-          radius: AppSizes.habitIconRadius,
-          backgroundColor: AppColors.optionBackground,
-          foregroundColor: AppColors.textMuted,
-          child: Icon(icon),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: AppSpacing.xs),
-            Text(value, style: Theme.of(context).textTheme.titleMedium),
-          ],
-        ),
-      ],
-    );
-  }
-}

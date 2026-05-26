@@ -12,6 +12,7 @@ class AppSpacing {
   static const headerToWeek = 20.0;
   static const xl = 24.0;
   static const xxl = 32.0;
+  static const detailTop = 28.0;
 }
 
 class AppRadius {
@@ -28,6 +29,8 @@ class AppSizes {
   static const buttonHeight = 54.0;
   static const frequencyHeight = 52.0;
   static const detailIconSize = 48.0;
+  static const detailIconBackgroundSize = 96.0;
+  static const detailActionIconSize = 20.0;
   static const habitIconRadius = 24.0;
   static const colorSwatchRadius = 22.0;
   static const weekDayRadius = 13.0;
