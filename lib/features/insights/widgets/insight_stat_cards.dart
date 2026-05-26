@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../controllers/habit_controller.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_dimensions.dart';
+import '../../../widgets/app_stat_card.dart';
 
 class InsightStatCards extends StatelessWidget {
   const InsightStatCards({super.key});
@@ -18,7 +19,7 @@ class InsightStatCards extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _InsightStatCard(
+          child: AppStatCard(
             title: 'Best streak',
             value: '${controller.bestStreak} days',
             subtitle: 'Best current streak',
@@ -29,7 +30,7 @@ class InsightStatCards extends StatelessWidget {
         ),
         SizedBox(width: AppSpacing.md),
         Expanded(
-          child: _InsightStatCard(
+          child: AppStatCard(
             title: 'Total completions',
             value: '$totalCompletions',
             subtitle: 'All habits',
@@ -39,54 +40,6 @@ class InsightStatCards extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _InsightStatCard extends StatelessWidget {
-  const _InsightStatCard({
-    required this.title,
-    required this.value,
-    required this.subtitle,
-    required this.icon,
-    required this.iconColor,
-    required this.backgroundColor,
-  });
-
-  final String title;
-  final String value;
-  final String subtitle;
-  final IconData icon;
-  final Color iconColor;
-  final Color backgroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: Theme.of(context).textTheme.bodySmall),
-                const SizedBox(height: AppSpacing.sm),
-                Text(value, style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                )),
-                const SizedBox(height: AppSpacing.xs),
-                Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
-              ],
-            ),
-          ),
-          Icon(icon, color: iconColor),
-        ],
-      ),
     );
   }
 }
