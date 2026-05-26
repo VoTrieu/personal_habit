@@ -54,7 +54,14 @@ class HabitController extends ChangeNotifier {
           habit.id,
           today,
         );
-        _habits.add(habit.copyWith(isCompletedToday: isCompletedToday));
+        final streak = await _database.getCurrentStreak(habit.id, today);
+        final updatedHabit = habit.copyWith(
+          isCompletedToday: isCompletedToday,
+          streak: streak,
+        );
+
+        await _database.updateHabit(updatedHabit);
+        _habits.add(updatedHabit);
       }
     } catch (error) {
       debugPrint('Failed to load habits: $error');

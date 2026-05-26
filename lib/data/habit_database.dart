@@ -106,29 +106,17 @@ class HabitDatabase {
   }
 
   Future<void> ensureDailyStatuses(List<Habit> habits, String today) async {
-    if (habits.isEmpty) return;
-
     final db = await database;
-    final latestRows = await db.query(
+    final datesToEnsure = _lastSevenDateKeys(today);
+
+    await db.delete(
       _dailyStatusesTable,
-      columns: ['statusDate'],
-      orderBy: 'statusDate DESC',
-      limit: 1,
+      where:
+          'statusDate NOT IN (${List.filled(datesToEnsure.length, '?').join(', ')})',
+      whereArgs: datesToEnsure,
     );
 
-    final datesToEnsure = <String>{today};
-    if (latestRows.isNotEmpty) {
-      final latestDate = _parseDateKey(
-        latestRows.first['statusDate'] as String,
-      );
-      final todayDate = _parseDateKey(today);
-
-      var date = latestDate.add(const Duration(days: 1));
-      while (!date.isAfter(todayDate)) {
-        datesToEnsure.add(_dateKey(date));
-        date = date.add(const Duration(days: 1));
-      }
-    }
+    if (habits.isEmpty) return;
 
     final batch = db.batch();
     for (final date in datesToEnsure) {
@@ -237,5 +225,14 @@ class HabitDatabase {
     final day = date.day.toString().padLeft(2, '0');
 
     return '${date.year}-$month-$day';
+  }
+
+  List<String> _lastSevenDateKeys(String today) {
+    final todayDate = _parseDateKey(today);
+
+    return List.generate(7, (index) {
+      final date = todayDate.subtract(Duration(days: 6 - index));
+      return _dateKey(date);
+    });
   }
 }
