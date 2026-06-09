@@ -4,16 +4,17 @@ import 'package:provider/provider.dart';
 import '../../../controllers/habit_controller.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_dimensions.dart';
+import '../../../utils/time_formatters.dart';
 
 class WeeklyCompletionChart extends StatelessWidget {
   const WeeklyCompletionChart({super.key});
 
-  static const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   static const percentages = ['100%', '75%', '50%', '25%', '0%'];
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.read<HabitController>();
+    final controller = context.watch<HabitController>();
+    final labels = _lastSevenDays().map(getWeekdayLabel).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,6 +28,9 @@ class WeeklyCompletionChart extends StatelessWidget {
           future: controller.weeklyCompletionRates(),
           builder: (context, snapshot) {
             final values = snapshot.data ?? List.filled(7, 0.0);
+            final isLoading =
+                controller.isLoading ||
+                snapshot.connectionState == ConnectionState.waiting;
 
             return Container(
               height: AppSizes.weeklyChartHeight,
@@ -46,9 +50,13 @@ class WeeklyCompletionChart extends StatelessWidget {
                   Expanded(
                     child: Column(
                       children: [
-                        Expanded(child: _ChartBars(values: values)),
+                        Expanded(
+                          child: isLoading
+                              ? const Center(child: CircularProgressIndicator())
+                              : _ChartBars(values: values),
+                        ),
                         const SizedBox(height: AppSpacing.sm),
-                        const _WeekdayLabels(labels: labels),
+                        _WeekdayLabels(labels: labels),
                       ],
                     ),
                   ),
@@ -59,6 +67,14 @@ class WeeklyCompletionChart extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  List<DateTime> _lastSevenDays() {
+    final today = DateTime.now();
+
+    return List.generate(7, (index) {
+      return today.subtract(Duration(days: 6 - index));
+    });
   }
 }
 
